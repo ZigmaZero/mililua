@@ -29,6 +29,12 @@ jobs:
 
       - name: Generate Docs
         run: emmylua_doc_cli ./library -o ./docs --site-name "Miliastra Wonderland Lua Scripting API"
+
+      - name: Upload Pages artifact
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: ./docs
+
   deploy:
     environment:
       name: github-pages
