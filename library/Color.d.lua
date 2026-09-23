@@ -5,7 +5,7 @@
 local ColorValue = {}
 
 ---@class Color
-local Color = {}
+Color = {}
 
 ---Creates a color from 0-255 RGB.
 ---@param r number # The red component (0-255).
