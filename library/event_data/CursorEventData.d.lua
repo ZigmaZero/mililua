@@ -1,12 +1,9 @@
 ---@meta
 
 ---The type that represents data exposed by cursor event callbacks.
----
----Pending Documentation:
----- Unknown purpose of `touchId`. Always seems to return -1
 ---@class CursorEventData
 ---@field dragging boolean # [Read] Whether currently dragging.
----@field touchId number # [Read] Unknown purpose, seems to always return -1.
+---@field touchId number # [Read] The touch interaction type. -1 for cursor clicks, 0-4 for touch gestures on mobile devices.
 local CursorEventData = {}
 
 ---Returns the cursor position when the event took place originating from the bottom-left corner of the viewport.
