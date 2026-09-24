@@ -21,14 +21,14 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
 
-      - name: Install Rust toolchain
-        uses: dtolnay/rust-toolchain@stable
-
-      - name: Install emmylua_doc_cli
-        run: cargo install emmylua_doc_cli
+      - name: Install custom emmylua_doc_cli
+        run: |
+          curl -L -o emmylua_doc_cli https://github.com/haminpants/emmylua-analyzer-rust/releases/download/v1.0.0/emmylua_doc_cli.exe
+          chmod +x emmylua_doc_cli
+          sudo mv emmylua_doc_cli /usr/local/bin/
 
       - name: Generate Docs
-        run: emmylua_doc_cli ./library -o ./docs --site-name "Miliastra Wonderland Lua Scripting API"
+        run: emmylua_doc_cli ./library -o ./docs --site-name "Miliastra Wonderland Lua API"
 
       - name: Upload Pages artifact
         uses: actions/upload-pages-artifact@v3
