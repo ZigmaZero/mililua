@@ -3,6 +3,7 @@
 
 ---CONFIG: Template ID of 1x1 Circle Image ClientControl with default settings here
 local BASIC_CIRCLE_IMAGE = 1073744698
+local CIRCLE_IMAGE_ID = 100002
 local ELEMENT_SIZE = 14
 local BASE64_ALPHABET = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/"
 
@@ -31,12 +32,12 @@ local function decode_base64(data)
         value3 = value3 - 1
         value4 = value4 - 1
 
-        output[#output + 1] = string.char(value1 * 4 + math.floor(value2 / 16))
+        output[#output + 1] = string.char(math.floor(value1 * 4 + math.floor(value2 / 16)))
         if third ~= "=" then
-            output[#output + 1] = string.char((value2 % 16) * 16 + math.floor(value3 / 4))
+            output[#output + 1] = string.char(math.floor((value2 % 16) * 16 + math.floor(value3 / 4)))
         end
         if fourth ~= "=" then
-            output[#output + 1] = string.char((value3 % 4) * 64 + value4)
+            output[#output + 1] = string.char(math.floor((value3 % 4) * 64 + value4))
         end
     end
 
@@ -92,6 +93,7 @@ end
 local module = {}
 
 ---draws the image under the parent. please ensure the parent actually has a mask to cover the edges.
+---NOTE: this script currently removes all images that happen to be the parent's children...
 ---@param parent ClientControlType
 ---@param target_width number
 ---@param target_height number
@@ -107,9 +109,12 @@ function module.DrawImage(parent, drawTable, target_width, target_height)
     end
 
     -- check current children and remove any non-images
-    for index, value in ipairs(parent:GetChildren()) do
+    for _, value in ipairs(parent:GetChildren()) do
         if typeof(value) ~= "ClientUIImageControl" then
-            game.DestroyClientUIControl(value)
+            ---@cast value ClientUIImageControl
+            if value.imageId == CIRCLE_IMAGE_ID then
+                game.DestroyClientUIControl(value)
+            end
         end
     end
 
