@@ -39,24 +39,16 @@ function game.GetControllerFocus() end
 
 ---Returns the left stick input values of the connected controller.
 ---
----Each axis returns a range within ? and ?, with 0 representing no input.
----
----Pending Documentation:
----- Valid range of `horizontalInput`
----- Valid range of `verticalInput`
----@return number horizontalInput # The horizontal axis input strength.
----@return number verticalInput # The vertical axis input strength.
+---Each axis returns a range within -1 and 1, with 0 representing no input.
+---@return number horizontalInput # The horizontal axis input strength. -1 represents left stick input, 1 represents right stick input.
+---@return number verticalInput # The vertical axis input strength. -1 represents downward stick input, 1 represents upward stick input.
 function game.GetControllerLeftStickAxis() end
 
 ---Returns the right stick input values of the connected controller.
 ---
----Each axis returns a range within ? and ?, with 0 representing no input.
----
----Pending Documentation:
----- Valid range of `horizontalInput`
----- Valid range of `verticalInput`
----@return number horizontalInput # The horizontal axis input strength.
----@return number verticalInput # The vertical axis input strength.
+---Each axis returns a range within -1 and 1, with 0 representing no input.
+---@return number horizontalInput # The horizontal axis input strength. -1 represents left stick input, 1 represents right stick input.
+---@return number verticalInput # The vertical axis input strength. -1 represents downward stick input, 1 represents upward stick input.
 function game.GetControllerRightStickAxis() end
 
 ---Returns the cursor position originating from the bottom-left corner of the viewport.
