@@ -108,6 +108,12 @@ function Circuit:removeComponent(component)
     table.remove(self.components, component_index)
 end
 
+function Circuit:disconnect(wire)
+    wire:remove()
+    local wire_index = findIndex(self.wires, wire)
+    table.remove(self.wires, wire_index)
+end
+
 function Circuit:evaluate()
     for _, component in ipairs(self.components) do
         component:evaluate()

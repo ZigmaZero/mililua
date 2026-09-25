@@ -7,8 +7,11 @@ local OutputPort = require "circuit.ports.OutputPort"
 ---@field new fun(id): CircuitComponent
 local CircuitComponent = class()
 
-function CircuitComponent:init(id)
+---@param id integer
+---@param type string
+function CircuitComponent:init(id, type)
     self.id = id
+    self.type = type
 
     self.x = 0
     self.y = 0
@@ -19,6 +22,10 @@ function CircuitComponent:init(id)
     self.outputs = {}
 
     self.enabled = true
+end
+
+function CircuitComponent:getType()
+    return self.type
 end
 
 function CircuitComponent:addInput()

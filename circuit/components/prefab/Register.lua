@@ -1,12 +1,13 @@
 local class = require "core.class"
 local CircuitComponent = require "circuit.components.CircuitComponent"
+local CircuitComponentType = require "circuit.components.CircuitComponentType"
 
 ---@class Register : CircuitComponent
 ---@field new fun(id): Register
 local Register = class(CircuitComponent)
 
 function Register:init(id)
-    CircuitComponent.init(self, id)
+    CircuitComponent.init(self, id, CircuitComponentType.REGISTER)
 
     self:addInput()   -- data
     self:addInput()   -- clock

@@ -6,40 +6,37 @@ local HUDView = class()
 
 function HUDView:init(frontend)
     self.frontend = frontend
-    self.levelNameObject = nil
-    self.levelDescriptionObject = nil
-    self.statusTextObject = nil
 end
 
 function HUDView:setLevelInfo(name, description)
     self.frontend:setText(
-        self.levelNameObject,
+        "levelName",
         name
     )
 
     self.frontend:statusTextObject(
-        self.levelDescriptionObject,
+        "levelDescription",
         description
     )
 end
 
 function HUDView:setStatus(text)
     self.frontend:setText(
-        self.statusTextObject,
+        "status",
         text
     )
 end
 
 function HUDView:showSuccess()
     self.frontend:setText(
-        self.statusTextObject,
+        "status",
         "Circuit complete!"
     )
 end
 
 function HUDView:showFailure(result)
     self.frontend:setText(
-        self.statusTextObject,
+        "status",
         "Output mismatch."
     )
 end

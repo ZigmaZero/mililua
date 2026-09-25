@@ -1,12 +1,13 @@
 local class = require "core.class"
 local CircuitComponent = require "circuit.components.CircuitComponent"
+local CircuitComponentType = require "circuit.components.CircuitComponentType"
 
 ---@class OutputNode : CircuitComponent
 ---@field new fun(id, name): OutputNode
 local OutputNode = class(CircuitComponent)
 
 function OutputNode:init(id, name)
-    CircuitComponent.init(self, id)
+    CircuitComponent.init(self, id, CircuitComponentType.OUTPUT)
 
     self.name = name
 

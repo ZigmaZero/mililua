@@ -5,7 +5,7 @@ local LogicGate = require "circuit.components.LogicGate"
 local Delay = class(LogicGate)
 
 function Delay:init(id)
-    LogicGate.init(self, id)
+    LogicGate.init(self, id, "DELAY")
 
     self:addInput()
     self:addOutput()

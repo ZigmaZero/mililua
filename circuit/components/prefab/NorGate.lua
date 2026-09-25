@@ -1,11 +1,12 @@
 local class = require "core.class"
 local LogicGate = require "circuit.components.LogicGate"
+local CircuitComponentType = require "circuit.components.CircuitComponentType"
 
 ---@class NorGate : LogicGate
 local NorGate = class(LogicGate)
 
 function NorGate:init(id)
-    LogicGate.init(self, id)
+    LogicGate.init(self, id, CircuitComponentType.NOR)
 
     self:addInput()
     self:addInput()

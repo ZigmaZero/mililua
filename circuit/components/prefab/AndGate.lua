@@ -5,7 +5,7 @@ local LogicGate = require "circuit.components.LogicGate"
 local AndGate = class(LogicGate)
 
 function AndGate:init(id)
-    LogicGate.init(self, id)
+    LogicGate.init(self, id, "AND")
 
     self:addInput()
     self:addInput()

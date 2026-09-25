@@ -10,11 +10,11 @@ end
 
 function ComponentPalette:addComponentType(name)
     local entry =
-        self.frontend:createPaletteEntry(name)
-
-    entry:onClick(function()
+        self.frontend:createPaletteEntry(name, function()
         self.editor:spawnComponent(name)
     end)
 
     table.insert(self.entries, entry)
 end
+
+return ComponentPalette

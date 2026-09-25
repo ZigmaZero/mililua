@@ -1,6 +1,8 @@
 local class = require "core.class"
+local ComponentView = require "frontend.ComponentView"
 local CircuitEditor = class()
 
+---@param circuit Circuit
 function CircuitEditor:init(circuit, frontend)
     self.circuit = circuit
     self.frontend = frontend
@@ -9,6 +11,13 @@ function CircuitEditor:init(circuit, frontend)
 
     self.componentViews = {}
     self.wireViews = {}
+end
+
+function CircuitEditor:spawnComponent(name)
+    local component = self.circuit:addComponent(name)
+    local view = ComponentView.new(component, self.frontend)
+    table.insert(self.componentViews, view)
+    view:create()
 end
 
 function CircuitEditor:selectComponent(component)
@@ -45,6 +54,7 @@ function CircuitEditor:connect(outputPort, inputPort)
 
     self:createWireView(wire)
 
+    table.insert(self.wireViews, wire)
     return wire
 end
 

@@ -10,11 +10,11 @@ function WireView:init(wire, frontend)
     self.wire = wire
     self.frontend = frontend
 
-    self.wireObjects = {}
+    self.object = {}
 end
 
 function WireView:create()
-    self.wireObjects =
+    self.object =
         self.frontend:createWireVisual(
             self.wire
         )
@@ -24,17 +24,17 @@ end
 
 function WireView:updatePosition()
     self.frontend:setWireAttachments(
-        self.wireObjects,
+        self.object,
         self.wire
     )
 end
 
 function WireView:destroy()
-    for index, value in ipairs(self.wireObjects) do
+    for index, value in ipairs(self.object) do
         self.frontend:destroyObject(value)
     end
 
-    self.wireObjects = {}
+    self.object = {}
 end
 
 return WireView

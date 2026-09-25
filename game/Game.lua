@@ -2,6 +2,7 @@ local class = "core.class"
 local Game = class()
 local CircuitEditor = require "game.CircuitEditor"
 local CircuitBuilder = require "game.CircuitBuilder"
+local ComponentPalette = require "game.ComponentPalette"
 local HUDView = require "frontend.HUDView"
 local LevelManager = require "puzzle.LevelManager"
 
@@ -15,6 +16,7 @@ function Game:init(frontend)
     self.circuit = nil
 
     self.editor = nil
+    self.palette = nil
     self.hud = nil
 end
 
@@ -32,6 +34,8 @@ function Game:loadLevel(level)
 
     self.hud =
         HUDView.new(self.frontend)
+
+    self.palette = ComponentPalette.new(self.editor, self.frontend)
 
     self.hud:setLevelInfo(level.name, level.description)
 end
