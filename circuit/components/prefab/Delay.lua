@@ -1,20 +1,20 @@
 local class = require "core.class"
 local LogicGate = require "circuit.components.LogicGate"
 
----@class NotGate : LogicGate
-local NotGate = class(LogicGate)
+---@class Delay : CircuitComponent
+local Delay = class(LogicGate)
 
-function NotGate:init(id)
+function Delay:init(id)
     LogicGate.init(self, id)
 
     self:addInput()
     self:addOutput()
 end
 
-function NotGate:evaluate()
+function Delay:evaluate()
     local a = self:getInput(1):getValue()
 
-    table.insert(self.internalValues, not a)
+    table.insert(self.internalValues, a)
 end
 
-return NotGate
+return Delay

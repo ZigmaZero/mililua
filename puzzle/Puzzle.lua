@@ -1,7 +1,7 @@
 local class = require "core.class"
 
 ---@class Puzzle
----@field new fun(): Puzzle
+---@field new fun(definition): Puzzle
 local Puzzle = class()
 
 function Puzzle:init(definition)

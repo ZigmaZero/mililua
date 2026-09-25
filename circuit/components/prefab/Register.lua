@@ -13,8 +13,9 @@ function Register:init(id)
 
     self:addOutput()
 
-    self.value = false
+    self.propagationTime = 4
     self.lastClockTick = false
+    self.value = false
 end
 
 function Register:evaluate()
@@ -23,9 +24,9 @@ function Register:evaluate()
     if clock and not self.lastClockTick then
         self.value = self:getInput(1):getValue()
     end
-
-    self:getOutput(1):setValue(self.value)
     self.lastClockTick = clock
+
+    table.insert(self.internalValues, self.value)
 end
 
 return Register

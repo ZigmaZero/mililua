@@ -16,7 +16,7 @@ function OrGate:evaluate()
     local a = self:getInput(1):getValue()
     local b = self:getInput(2):getValue()
 
-    self:getOutput(1):setValue(a or b)
+    table.insert(self.internalValues, a or b)
 end
 
 return OrGate

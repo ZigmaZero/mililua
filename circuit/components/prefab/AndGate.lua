@@ -16,7 +16,7 @@ function AndGate:evaluate()
     local a = self:getInput(1):getValue()
     local b = self:getInput(2):getValue()
 
-    self:getOutput(1):setValue(a and b)
+    table.insert(self.internalValues, a and b)
 end
 
 return AndGate

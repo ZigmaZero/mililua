@@ -12,6 +12,8 @@ function CircuitComponent:init(id)
 
     self.x = 0
     self.y = 0
+    self.propagationTime = 1
+    self.internalValues = {}
 
     self.inputs = {}
     self.outputs = {}
@@ -33,10 +35,14 @@ function CircuitComponent:addOutput()
     return port
 end
 
+---@param index integer
+---@return InputPort
 function CircuitComponent:getInput(index)
     return self.inputs[index]
 end
 
+---@param index integer
+---@return OutputPort
 function CircuitComponent:getOutput(index)
     return self.outputs[index]
 end
@@ -52,6 +58,13 @@ end
 
 function CircuitComponent.evaluate()
     error("CircuitComponent:evaluate() must be overridden")
+end
+
+function CircuitComponent:tick()
+    if #self.internalValues >= self.propagationTime then
+        self:getOutput(1):setValue(self.internalValues[1])
+        table.remove(self.internalValues, 1)
+    end
 end
 
 return CircuitComponent

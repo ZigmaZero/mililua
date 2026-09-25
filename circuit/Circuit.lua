@@ -94,9 +94,12 @@ function Circuit:removeComponent(component)
 end
 
 function Circuit:evaluate()
-    -- TODO: switch to front-to-back evaluation or dependency-aware evaluation
     for _, component in ipairs(self.components) do
         component:evaluate()
+    end
+
+    for _, component in ipairs(self.components) do
+        component:tick()
     end
 end
 

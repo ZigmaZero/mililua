@@ -1,7 +1,9 @@
 local class = "core.class"
 local Game = class()
 local CircuitEditor = require "game.CircuitEditor"
+local CircuitBuilder = require "game.CircuitBuilder"
 local HUDView = require "frontend.HUDView"
+local LevelManager = require "puzzle.LevelManager"
 
 function Game:init(frontend)
     self.frontend = frontend
@@ -20,7 +22,7 @@ function Game:loadLevel(level)
     self.currentLevel = level
 
     self.circuit =
-        CircuitBuilder:createPuzzleCircuit(level)
+        CircuitBuilder:fromLevel(level)
 
     self.editor =
         CircuitEditor.new(
