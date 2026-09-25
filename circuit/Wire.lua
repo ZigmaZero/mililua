@@ -4,7 +4,7 @@ local class = require "core.class"
 ---@field new fun(source, destination): Wire
 local Wire = class()
 
----@param source InputPort
+---@param source OutputPort
 ---@param destination InputPort
 function Wire:init(source, destination)
     self.source = source
