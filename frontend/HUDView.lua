@@ -1,22 +1,16 @@
-local class = require "core.class"
+local class = require("core.class")
 
----@class HUDView
----@field new fun(frontend): HUDView
 local HUDView = class()
 
-function HUDView:init(frontend)
+function HUDView:init(frontend, game)
     self.frontend = frontend
+    self.game = game
 end
 
-function HUDView:setLevelInfo(name, description)
+function HUDView:setLevelName(name)
     self.frontend:setText(
-        "levelName",
+        "level_name",
         name
-    )
-
-    self.frontend:statusTextObject(
-        "levelDescription",
-        description
     )
 end
 
@@ -27,18 +21,32 @@ function HUDView:setStatus(text)
     )
 end
 
-function HUDView:showSuccess()
+function HUDView:setInfo(text)
     self.frontend:setText(
-        "status",
-        "Circuit complete!"
+        "info",
+        text
     )
 end
 
-function HUDView:showFailure(result)
-    self.frontend:setText(
-        "status",
-        "Output mismatch."
+function HUDView:showSuccess()
+    self:setStatus("Circuit complete!")
+end
+
+function HUDView:showFailure()
+    self:setStatus("Circuit does not satisfy the requirements.")
+end
+
+function HUDView:bindTestButton(reference)
+    self.frontend:onClick(
+        reference,
+        function()
+            self:onTest()
+        end
     )
+end
+
+function HUDView:onTest()
+    self.game:testCircuit()
 end
 
 return HUDView

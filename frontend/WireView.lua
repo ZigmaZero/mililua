@@ -1,37 +1,50 @@
-local class = require "core.class"
+local class = require("core.class")
+local View = require("frontend.View")
 
----@class WireView
----@field new fun(wire, frontend): WireView
-local WireView = class()
+local WireView = class(View)
 
----@param wire Wire
----@param frontend any
-function WireView:init(wire, frontend)
+function WireView:init(wire, frontend, reference, editor)
+    View.init(self, frontend)
+
     self.wire = wire
-    self.frontend = frontend
+    self.reference = reference
+    self.editor = editor
 
-    self.object = {}
+    self:_bindListeners()
 end
 
-function WireView:create()
-    self.object =
-        self.frontend:createWireVisual(
-            self.wire
-        )
+function WireView:_bindListeners()
+    self.frontend:onRMB(
+        self.reference,
+        function()
+            self:onRemove()
+        end
+    )
 
-    self:updatePosition()
-end
-
-function WireView:updatePosition()
-    self.frontend:setWireAttachments(
-        self.object,
-        self.wire
+    self.frontend:onShift(
+        self.reference,
+        function()
+            self:onRemove()
+        end
     )
 end
 
+function WireView:setCursorPosition(x, y)
+    self.frontend:setWireEndPosition(
+        self.reference,
+        x,
+        y
+    )
+end
+
+function WireView:onRemove()
+    self.editor:removeWire(self.wire)
+end
+
 function WireView:destroy()
-    self.frontend:destroyObject(self.object)
-    self.object = {}
+    self.frontend:destroyObject(
+        self.reference
+    )
 end
 
 return WireView

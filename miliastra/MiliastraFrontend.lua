@@ -3,46 +3,51 @@ local class = "core.class"
 
 local MiliastraFrontend = class()
 
-function MiliastraFrontend:init()
+function MiliastraFrontend:init(uiRoot)
+    self.uiRoot = uiRoot
 end
 
----@param component CircuitComponent
----@return ClientControlType|nil
+-- Object Creation
+
 function MiliastraFrontend:createComponentVisual(component)
-    local object = nil
-    if component:getType() == CircuitComponentType.INPUT then
-
-    end
-    return object
+    -- TODO:
+    -- Create the MiliLua UI object representing this component.
+    -- Select the visual based on component:getType().
+    -- Parent it to the appropriate UI root/container.
+    -- Return the created MiliLua object.
 end
 
----@param wire Wire
----@return ClientUIContainerControl|nil
 function MiliastraFrontend:createWireVisual(wire)
-    -- MiliLua-specific implementation
+    -- TODO:
+    -- Create the MiliLua object(s) used to render a permanent wire.
+    -- Return the reference object.
 end
 
-function MiliastraFrontend:setWireAttachments(objectlist, wire)
-    -- MiliLua-specific implementation
+function MiliastraFrontend:createTemporaryWireVisual(
+    port,
+    x,
+    y
+)
+    -- TODO:
+    -- Create a temporary wire visual beginning at the port.
+    -- Return the reference object.
 end
 
-function MiliastraFrontend:setPosition(object, x, y)
-    -- MiliLua-specific implementation
+-- Port references 
+function MiliastraFrontend:getInputPortReference(
+    componentReference,
+    index
+)
+    -- TODO:
+    -- Return the MiliLua object representing
+    -- the specified input socket.
 end
 
-function MiliastraFrontend:createPaletteEntry(name, onClick)
-    
+function MiliastraFrontend:getOutputPortReference(
+    componentReference,
+    index
+)
+    -- TODO:
+    -- Return the MiliLua object representing
+    -- the specified output socket.
 end
-
-function MiliastraFrontend:setVisible(object, visible)
-end
-
-function MiliastraFrontend:setText(object, text)
-end
-
----@param object ClientControlType
-function MiliastraFrontend:destroyObject(object)
-    game.DestroyClientUIControl(object)
-end
-
-return MiliastraFrontend

@@ -8,62 +8,151 @@ function CircuitEditor:init(circuit, frontend)
     self.circuit = circuit
     self.frontend = frontend
 
-    self.selected = nil
-
     self.componentViews = {}
     self.wireViews = {}
+
+    self.temporaryWireViews = {}
 end
 
-function CircuitEditor:spawnComponent(name)
-    local component = self.circuit:addComponent(name)
-    local view = ComponentView.new(component, self.frontend)
-    self.componentViews[component.id] = view
-    view:create()
-end
+function CircuitEditor:createComponent(
+    componentType,
+    x,
+    y
+)
+    local component =
+        self.circuit:addComponent(componentType)
 
-function CircuitEditor:selectComponent(component)
-    self.selected = component
-end
-
-function CircuitEditor:moveComponent(component, x, y)
     component:setPosition(x, y)
 
-    local view = self.componentViews[component.id]
+    local reference =
+        self.frontend:createComponentVisual(
+            component
+        )
 
-    if view then
-        view:updatePosition()
-    end
+    local view =
+        ComponentView:new(
+            component,
+            self.frontend,
+            reference,
+            self
+        )
+
+    self.componentViews[component.id] = view
+
+    return view
 end
 
-function CircuitEditor:deleteComponent(component)
-    self.circuit:removeComponent(component)
-
-    local view = self.componentViews[component.id]
+function CircuitEditor:removeComponent(component)
+    local view =
+        self.componentViews[component.id]
 
     if view then
         view:destroy()
         self.componentViews[component.id] = nil
     end
+
+    self.circuit:removeComponent(component)
 end
 
-function CircuitEditor:connect(outputPort, inputPort)
+function CircuitEditor:connectPorts(
+    source,
+    destination
+)
+    if not self:isOppositePortPair(
+        source,
+        destination
+    ) then
+        return nil
+    end
+
+    local output
+    local input
+
+    if source.type == "OUTPUT" then
+        output = source
+        input = destination
+    else
+        output = destination
+        input = source
+    end
+
     local wire =
         self.circuit:connect(
-            outputPort,
-            inputPort
+            output,
+            input
         )
 
-    table.insert(self.wireViews, WireView.new(wire, self.frontend))
+    local reference =
+        self.frontend:createWireVisual(
+            wire
+        )
+
+    local view =
+        WireView:new(
+            wire,
+            self.frontend,
+            reference,
+            self
+        )
+
+    self.wireViews[wire.id] = view
+
     return wire
 end
 
----@param wire Wire
-function CircuitEditor:disconnect(wire)
-    for index, view in ipairs(self.wireViews) do
-        if view.wire.source == wire.source and view.wire.destination == wire.destination then
-            wire:remove()
-            view:destroy()
-            table.remove(self.wireViews, index)
+function CircuitEditor:isOppositePortPair(a, b)
+    return (
+        a.type == "OUTPUT" and
+        b.type == "INPUT"
+    ) or (
+        a.type == "INPUT" and
+        b.type == "OUTPUT"
+    )
+end
+
+function CircuitEditor:createTemporaryWire(
+    port,
+    x,
+    y
+)
+    local reference =
+        self.frontend:createTemporaryWireVisual(
+            port,
+            x,
+            y
+        )
+
+    local view =
+        WireView:new(
+            nil,
+            self.frontend,
+            reference,
+            self
+        )
+
+    table.insert(
+        self.temporaryWireViews,
+        view
+    )
+
+    return view
+end
+
+function CircuitEditor:destroyTemporaryWire(
+    wireView
+)
+    wireView:destroy()
+
+    for i, view in ipairs(
+        self.temporaryWireViews
+    ) do
+        if view == wireView then
+            table.remove(
+                self.temporaryWireViews,
+                i
+            )
+
+            break
         end
     end
 end
