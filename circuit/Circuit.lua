@@ -3,15 +3,56 @@ local Wire = require "circuit.Wire"
 local ComponentFactory = require "circuit.ComponentFactory"
 local findIndex = require("utils.ListOperationsUtils").findIndex
 local filterList = require("utils.ListOperationsUtils").filterList
+local InputNode  = require("circuit.components.prefab.InputNode")
+local OutputNode = require("circuit.components.prefab.OutputNode")
 
 ---@class Circuit
 ---@field new fun(): Circuit
 local Circuit = class()
 
 function Circuit:init()
+    self.inputNodes = {}
+    self.outputNodes = {}
     self.components = {}
     self.wires = {}
     self.nextComponentId = 1
+end
+
+function Circuit:addInputNode(name)
+    local component = InputNode.new(self.nextComponentId, name)
+    table.insert(self.inputNodes, component)
+    self.nextComponentId = self.nextComponentId + 1
+    return component
+end
+
+function Circuit:addOutputNode(name)
+    local component = OutputNode.new(self.nextComponentId, name)
+    table.insert(self.outputNodes, component)
+    self.nextComponentId = self.nextComponentId + 1
+    return component
+end
+
+function Circuit:setInputs(values)
+    for name, value in pairs(values) do
+        local node = self.inputNodes[name]
+
+        assert(
+            node,
+            "Unknown circuit input: " .. tostring(name)
+        )
+
+        node:setValue(value)
+    end
+end
+
+function Circuit:getOutputs()
+    local values = {}
+
+    for name, node in pairs(self.outputNodes) do
+        values[name] = node:getValue()
+    end
+
+    return values
 end
 
 ---@param componentType string

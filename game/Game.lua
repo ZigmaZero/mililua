@@ -1,6 +1,6 @@
 local class = "core.class"
 local Game = class()
-local CircuitBuilder = require "game.CircuitEditor"
+local CircuitEditor = require "game.CircuitEditor"
 local HUDView = require "frontend.HUDView"
 
 function Game:init(frontend)
@@ -32,4 +32,19 @@ function Game:loadLevel(level)
         HUDView.new(self.frontend)
 
     self.hud:setLevelName(level.name)
+end
+
+function Game:testCircuit()
+    local result =
+        self.currentLevel:test(
+            self.circuit
+        )
+
+    if result.success then
+        self.hud:showSuccess()
+    else
+        self.hud:showFailure(result)
+    end
+
+    return result
 end

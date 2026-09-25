@@ -18,10 +18,20 @@ function Puzzle:init(definition)
         definition.tests
 end
 
+function Puzzle:outputsEqual(a, b)
+    for key, value in pairs(a) do
+        if b[key] ~= value then
+            return false
+        end
+    end
+    return true
+end
+
+---@param circuit Circuit
 function Puzzle:test(circuit)
     for _, test in ipairs(self.tests) do
         circuit:setInputs(test.input)
-        circuit:simulate()
+        circuit:evaluate()
 
         local actual = circuit:getOutputs()
 

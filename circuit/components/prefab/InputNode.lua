@@ -2,6 +2,7 @@ local class = require "core.class"
 local CircuitComponent = require "circuit.components.CircuitComponent"
 
 ---@class InputNode : CircuitComponent
+---@field new fun(id, name): InputNode
 local InputNode = class(CircuitComponent)
 
 function InputNode:init(id, name)
