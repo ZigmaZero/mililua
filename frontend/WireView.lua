@@ -30,10 +30,7 @@ function WireView:updatePosition()
 end
 
 function WireView:destroy()
-    for index, value in ipairs(self.object) do
-        self.frontend:destroyObject(value)
-    end
-
+    self.frontend:destroyObject(self.object)
     self.object = {}
 end
 
