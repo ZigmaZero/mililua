@@ -25,3 +25,5 @@ end
 
 function MiliastraFrontend:destroyObject(object)
 end
+
+return MiliastraFrontend

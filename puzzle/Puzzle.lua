@@ -42,3 +42,5 @@ function Puzzle:test(circuit)
         success = true
     }
 end
+
+return Puzzle

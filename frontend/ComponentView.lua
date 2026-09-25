@@ -36,3 +36,5 @@ function ComponentView:destroy()
 
     self.object = nil
 end
+
+return ComponentView
