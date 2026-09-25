@@ -1,12 +1,13 @@
 local class = require "core.class"
 
 ---@class Wire
----@field new fun(source, destination): Wire
+---@field new fun(id: integer, source: OutputPort, destination: InputPort): Wire
 local Wire = class()
 
 ---@param source OutputPort
 ---@param destination InputPort
-function Wire:init(source, destination)
+function Wire:init(id, source, destination)
+    self.id = id
     self.source = source
     self.destination = destination
 

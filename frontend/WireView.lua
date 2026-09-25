@@ -20,13 +20,6 @@ function WireView:_bindListeners()
             self:onRemove()
         end
     )
-
-    self.frontend:onShift(
-        self.reference,
-        function()
-            self:onRemove()
-        end
-    )
 end
 
 function WireView:setCursorPosition(x, y)

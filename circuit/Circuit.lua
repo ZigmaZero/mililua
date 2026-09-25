@@ -86,8 +86,8 @@ end
 ---@param inputPort InputPort
 ---@return Wire
 function Circuit:connect(outputPort, inputPort)
-    local wire = Wire.new(outputPort, inputPort)
-
+    local wire = Wire.new(self.nextComponentId, outputPort, inputPort)
+    self.nextComponentId = self.nextComponentId + 1
     table.insert(self.wires, wire)
     return wire
 end
