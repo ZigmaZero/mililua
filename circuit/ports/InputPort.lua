@@ -1,5 +1,5 @@
-class = require "core.class"
-Port = require "circuit.ports.Port"
+local class = require "core.class"
+local Port = require "circuit.ports.Port"
 
 ---@class InputPort : Port
 ---@field new fun(owner, index): InputPort
@@ -15,6 +15,13 @@ end
 ---@param wire Wire
 function InputPort:connect(wire)
     self.connection = wire
+end
+
+---@param wire Wire
+function InputPort:disconnect(wire)
+    if self.connection == wire then
+        self.connection = nil
+    end
 end
 
 ---@return boolean

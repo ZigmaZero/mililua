@@ -1,4 +1,4 @@
-class = require "core.class"
+local class = require "core.class"
 
 ---@class Port
 ---@field new fun(owner, index): Port

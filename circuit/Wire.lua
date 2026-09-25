@@ -14,6 +14,11 @@ function Wire:init(source, destination)
     destination:connect(self)
 end
 
+function Wire:remove()
+    self.source:disconnect(self)
+    self.destination:disconnect(self)
+end
+
 function Wire:getValue()
     return self.source:getValue()
 end

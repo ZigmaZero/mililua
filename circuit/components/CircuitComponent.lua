@@ -3,6 +3,7 @@ local InputPort = require "circuit.ports.InputPort"
 local OutputPort = require "circuit.ports.OutputPort"
 
 ---@class CircuitComponent
+---@field id integer
 local CircuitComponent = class()
 
 function CircuitComponent:init(id)
