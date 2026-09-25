@@ -4,6 +4,8 @@ local Level = Puzzle.new({
 
     name = "AND Gate",
 
+    info = "Example of an AND Gate level",
+
     inputs = {
         "A",
         "B"
@@ -18,49 +20,24 @@ local Level = Puzzle.new({
     },
 
     tests = {
-        {
-            input = {
-                A = false,
-                B = false
+        input = {
+            [4] = {
+                A = true
             },
-
-            output = {
-                OUT = false
-            }
-        },
-
-        {
-            input = {
-                A = false,
+            [24] = {
                 B = true
-            },
-
-            output = {
-                OUT = false
             }
         },
-
-        {
-            input = {
-                A = true,
-                B = false
+        output = {
+            [20] = {
+                O = false
             },
-
-            output = {
-                OUT = false
-            }
-        },
-
-        {
-            input = {
-                A = true,
-                B = true
-            },
-
-            output = {
-                OUT = true
+            [40] = {
+                O = true
             }
         }
-    }
+    },
+
+    simulationLimit = 100
 })
 return Level

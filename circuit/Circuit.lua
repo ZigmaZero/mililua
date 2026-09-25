@@ -32,17 +32,32 @@ function Circuit:addOutputNode(name)
     return component
 end
 
+function Circuit:setInput(name, value)
+    local node = self.inputNodes[name]
+
+    assert(
+        node,
+        "Unknown circuit input: " .. tostring(name)
+    )
+
+    node:setValue(value)
+end
+
 function Circuit:setInputs(values)
     for name, value in pairs(values) do
-        local node = self.inputNodes[name]
-
-        assert(
-            node,
-            "Unknown circuit input: " .. tostring(name)
-        )
-
-        node:setValue(value)
+        self:setInput(name, value)
     end
+end
+
+function Circuit:getOutput(name)
+    local node = self.outputNodes[name]
+
+    assert(
+        node,
+        "Unknown circuit input: " .. tostring(name)
+    )
+
+    return node:getValue()
 end
 
 function Circuit:getOutputs()

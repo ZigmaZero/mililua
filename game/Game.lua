@@ -33,7 +33,7 @@ function Game:loadLevel(level)
     self.hud =
         HUDView.new(self.frontend)
 
-    self.hud:setLevelName(level.name)
+    self.hud:setLevelInfo(level.name, level.description)
 end
 
 function Game:testCircuit()
