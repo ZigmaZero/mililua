@@ -22,3 +22,5 @@ end
 function Wire:getValue()
     return self.source:getValue()
 end
+
+return Wire

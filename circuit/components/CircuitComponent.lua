@@ -4,6 +4,7 @@ local OutputPort = require "circuit.ports.OutputPort"
 
 ---@class CircuitComponent
 ---@field id integer
+---@field new fun(id): CircuitComponent
 local CircuitComponent = class()
 
 function CircuitComponent:init(id)
@@ -32,6 +33,14 @@ function CircuitComponent:addOutput()
     return port
 end
 
+function CircuitComponent:getInput(index)
+    return self.inputs[index]
+end
+
+function CircuitComponent:getOutput(index)
+    return self.outputs[index]
+end
+
 function CircuitComponent:setPosition(x, y)
     self.x = x
     self.y = y
@@ -44,3 +53,5 @@ end
 function CircuitComponent.evaluate()
     error("CircuitComponent:evaluate() must be overridden")
 end
+
+return CircuitComponent

@@ -1,6 +1,8 @@
 local class = require "core.class"
 local Wire = require "circuit.Wire"
 local ComponentFactory = require "circuit.ComponentFactory"
+local findIndex = require("utils.ListOperationsUtils").findIndex
+local filterList = require("utils.ListOperationsUtils").filterList
 
 ---@class Circuit
 ---@field new fun(): Circuit
@@ -35,7 +37,19 @@ function Circuit:connect(outputPort, inputPort)
 end
 
 function Circuit:removeComponent(component)
-    -- TODO: remove associated wires first, then remove component
+    local filter = {}
+    for index, wire in ipairs(self.wires) do
+        ---@cast wire Wire
+        if wire.source.owner == component or wire.destination.owner == component then
+            wire:remove()
+            filter[index] = true
+        end
+    end
+
+    self.wires = filterList(self.wires, filter)
+
+    local component_index = findIndex(self.components, component)
+    table.remove(self.components, component_index)
 end
 
 function Circuit:evaluate()
@@ -44,3 +58,5 @@ function Circuit:evaluate()
         component:evaluate()
     end
 end
+
+return Circuit
