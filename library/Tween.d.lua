@@ -47,7 +47,7 @@ function Tween:Resume() end
 ---- Only takes effect if the Tween is in the Initial state.
 ---
 ---**See:**
----- [Enum.EaseType](https://haminpants.github.io/mililua/class/Enum.EaseType.html) for all ease types.
+---- [Enum.EaseType](https://haminpants.github.io/miliastra-lua-api/class/Enum.EaseType.html) for all ease types.
 ---- [Interactive Easing Simulator](https://interverse.github.io/easelab/) to visualize the effect of each ease type.
 ---@param easeType EnumItem.EaseType # The easing function to animate fields with.
 ---@return Tween # The current Tween instance.

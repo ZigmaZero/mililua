@@ -19,13 +19,13 @@ local ClientUIGridScrollerControl = {}
 ---- The corresponding lifecycle functions will be called for all affected Client Controls.
 ---
 ---**See:**
----- [OnDisable](https://haminpants.github.io/mililua/global/OnDisable.html)
----- [OnDestroy](https://haminpants.github.io/mililua/global/OnDestroy.html)
----- [OnInit](https://haminpants.github.io/mililua/global/OnInit.html)
----- [OnEnable](https://haminpants.github.io/mililua/global/OnEnable.html)
----- [OnStart](https://haminpants.github.io/mililua/global/OnStart.html)
----- [OnUpdate](https://haminpants.github.io/mililua/global/OnUpdate.html)
----- [OnLevelUpdate](https://haminpants.github.io/mililua/global/OnLevelUpdate.html)
+---- [OnDisable](https://haminpants.github.io/miliastra-lua-api/global/OnDisable.html)
+---- [OnDestroy](https://haminpants.github.io/miliastra-lua-api/global/OnDestroy.html)
+---- [OnInit](https://haminpants.github.io/miliastra-lua-api/global/OnInit.html)
+---- [OnEnable](https://haminpants.github.io/miliastra-lua-api/global/OnEnable.html)
+---- [OnStart](https://haminpants.github.io/miliastra-lua-api/global/OnStart.html)
+---- [OnUpdate](https://haminpants.github.io/miliastra-lua-api/global/OnUpdate.html)
+---- [OnLevelUpdate](https://haminpants.github.io/miliastra-lua-api/global/OnLevelUpdate.html)
 ---@param itemCount integer # The number of list item Client Controls to instantiate.
 ---@param callback fun(control: ClientControlType, index: integer) # The function invoked for each instantiated item, where `control` is the instantiated Client Control and `index` is its 0-indexed position in the Grid Scroller's internal list.
 function ClientUIGridScrollerControl:RefreshItems(itemCount, callback) end
@@ -56,7 +56,7 @@ function ClientUIGridScrollerControl:GetPadding() end
 ---Instantly scrolls to the list item at the specified index.
 ---
 ---**See:**
----- [Enum.ScrollAlignType](https://haminpants.github.io/mililua/class/Enum.ScrollAlignType.html) for all scroll alignment types.
+---- [Enum.ScrollAlignType](https://haminpants.github.io/miliastra-lua-api/class/Enum.ScrollAlignType.html) for all scroll alignment types.
 ---@param index integer # The index of the list item to scroll to. Automatically clamped within the valid range of indices.
 ---@param scrollAlignType EnumItem.ScrollAlignType # The alignment type to determine where the specified list item should be when the scroll completes.
 function ClientUIGridScrollerControl:ScrollToItemAt(index, scrollAlignType) end

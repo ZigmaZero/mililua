@@ -16,8 +16,8 @@ local Script = {}
 ---Sets whether the script executes OnUpdate and OnLevelUpdate lifecycle functions.
 ---
 ---**See:**
----- [OnUpdate](https://haminpants.github.io/mililua/global/OnUpdate.html)
----- [OnLevelUpdate](https://haminpants.github.io/mililua/global/OnLevelUpdate.html)
+---- [OnUpdate](https://haminpants.github.io/miliastra-lua-api/global/OnUpdate.html)
+---- [OnLevelUpdate](https://haminpants.github.io/miliastra-lua-api/global/OnLevelUpdate.html)
 ---@param enabled boolean # Whether to execute OnUpdate and OnLevelUpdate lifecycle functions.
 function Script:EnableUpdate(enabled) end
 
@@ -32,7 +32,7 @@ function Script:GetParam(varName) end
 ---- If calling a global function from another script instance, it is recommended to check that the target script is alive.
 ---
 ---**See:**
----- [Script.alive](https://haminpants.github.io/mililua/class/Script.html#Script.alive)
+---- [Script.alive](https://haminpants.github.io/miliastra-lua-api/class/Script.html#Script.alive)
 ---@param funcName string # The name of the function to call (case-sensitive).
 ---@param ... any # Parameters to pass to the function call.
 ---@return any ... # The return values of the called function.
@@ -43,8 +43,8 @@ function Script:Invoke(funcName, ...) end
 ---- The callback function does not provide pre-change or post-change values.
 ---
 ---**See:**
----- [Enum.CustomVariableEntityType](https://haminpants.github.io/mililua/class/Enum.CustomVariableEntityType.html) for all entities that Custom Variables changes can be handled on.
----- [game.GetGlobalCustomVariableValue](https://haminpants.github.io/mililua/global/game.html#game.GetGlobalCustomVariableValue)
+---- [Enum.CustomVariableEntityType](https://haminpants.github.io/miliastra-lua-api/class/Enum.CustomVariableEntityType.html) for all entities that Custom Variables changes can be handled on.
+---- [game.GetGlobalCustomVariableValue](https://haminpants.github.io/miliastra-lua-api/global/game.html#game.GetGlobalCustomVariableValue)
 ---@param entity EnumItem.CustomVariableEntityType # The entity to handle Custom Variable changes on.
 ---@param varName string # The name of the Custom Variable.
 ---@param callback fun(entity: EnumItem.CustomVariableEntityType, varName: string) # The callback to execute whenever the specified Custom Variable changes.
@@ -76,7 +76,7 @@ function Script:RegisterServerSignalHandler(signalName, callback) end
 ---Removes the handler for the specified Custom Variable.
 ---
 ---**See:**
----- [Enum.CustomVariableEntityType](https://haminpants.github.io/mililua/class/Enum.CustomVariableEntityType.html) for all entities that Custom Variable changes can be handled on.
+---- [Enum.CustomVariableEntityType](https://haminpants.github.io/miliastra-lua-api/class/Enum.CustomVariableEntityType.html) for all entities that Custom Variable changes can be handled on.
 ---@param entity EnumItem.CustomVariableEntityType # The entity to unregister the handler from.
 ---@param varName string # The name of the Custom Variable.
 function Script:UnregisterCustomVariableChangedHandler(entity, varName) end

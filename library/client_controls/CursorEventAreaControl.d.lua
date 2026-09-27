@@ -8,8 +8,8 @@ local ClientUICursorEventAreaControl = {}
 ---Registers a cursor event listener to the Client Control.
 ---
 ---**See:**
----- [Enum.CursorEventType](https://haminpants.github.io/mililua/class/Enum.CursorEventType.html) for all cursor event types.
----- [CursorEventData](https://haminpants.github.io/mililua/class/CursorEventData.html)
+---- [Enum.CursorEventType](https://haminpants.github.io/miliastra-lua-api/class/Enum.CursorEventType.html) for all cursor event types.
+---- [CursorEventData](https://haminpants.github.io/miliastra-lua-api/class/CursorEventData.html)
 ---@param eventType EnumItem.CursorEventType # The cursor event type to listen for.
 ---@param callback fun(eventData: CursorEventData) # The callback function, which exposes data about the cursor event.
 function ClientUICursorEventAreaControl:AddCursorEventListener(eventType, callback) end
@@ -17,8 +17,8 @@ function ClientUICursorEventAreaControl:AddCursorEventListener(eventType, callba
 ---Removes the specified cursor event listener from the Client Control.
 ---
 ---**See:**
----- [Enum.CursorEventType](https://haminpants.github.io/mililua/class/Enum.CursorEventType.html) for all cursor event types.
----- [CursorEventData](https://haminpants.github.io/mililua/class/CursorEventData.html)
+---- [Enum.CursorEventType](https://haminpants.github.io/miliastra-lua-api/class/Enum.CursorEventType.html) for all cursor event types.
+---- [CursorEventData](https://haminpants.github.io/miliastra-lua-api/class/CursorEventData.html)
 ---@param eventType EnumItem.CursorEventType # The event type to remove the callback from.
 ---@param callback fun(eventData: CursorEventData) # The callback function to remove.
 function ClientUICursorEventAreaControl:RemoveCursorEventListener(eventType, callback) end
@@ -26,7 +26,7 @@ function ClientUICursorEventAreaControl:RemoveCursorEventListener(eventType, cal
 ---Removes all cursor event listeners for the specified event type from the Client Control.
 ---
 ---**See:**
----- [Enum.CursorEventType](https://haminpants.github.io/mililua/class/Enum.CursorEventType.html) for all cursor event types.
+---- [Enum.CursorEventType](https://haminpants.github.io/miliastra-lua-api/class/Enum.CursorEventType.html) for all cursor event types.
 ---@param eventType EnumItem.CursorEventType # The event type to clear listeners from.
 function ClientUICursorEventAreaControl:RemoveCursorEventListeners(eventType) end
 

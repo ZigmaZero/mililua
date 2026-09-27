@@ -36,13 +36,13 @@ function ClientUIImageControl:SetSoftEdgeWidth(widthX, widthY) end
 ---Sets the fill type to Unused.
 ---
 ---**See:**
----- [Enum.ImageFillType](https://haminpants.github.io/mililua/class/Enum.ImageFillType.html) for all image fill types.
+---- [Enum.ImageFillType](https://haminpants.github.io/miliastra-lua-api/class/Enum.ImageFillType.html) for all image fill types.
 function ClientUIImageControl:SetFillUnused() end
 
 ---Sets the fill type to Horizontal and sets the horizontal fill type and fill amount to the specified values.
 ---
 ---**See:**
----- [Enum.ImageFillHorizontalType](https://haminpants.github.io/mililua/class/Enum.ImageFillHorizontalType.html) for all horizontal image fill types.
+---- [Enum.ImageFillHorizontalType](https://haminpants.github.io/miliastra-lua-api/class/Enum.ImageFillHorizontalType.html) for all horizontal image fill types.
 ---@param fillHorizontalType EnumItem.ImageFillHorizontalType # The horizontal fill type.
 ---@param fillAmount NormalizedPercentage # The normalized percentage of the image that should be revealed.
 function ClientUIImageControl:SetFillHorizontal(fillHorizontalType, fillAmount) end
@@ -51,7 +51,7 @@ function ClientUIImageControl:SetFillHorizontal(fillHorizontalType, fillAmount) 
 ---- Changes are applied even if masking is disabled; masking will not be enabled if disabled when the function is called.
 ---
 ---**See:**
----- [Enum.ImageFillVerticalType](https://haminpants.github.io/mililua/class/Enum.ImageFillVerticalType.html) for all vertical image fill types.
+---- [Enum.ImageFillVerticalType](https://haminpants.github.io/miliastra-lua-api/class/Enum.ImageFillVerticalType.html) for all vertical image fill types.
 ---@param fillVerticalType EnumItem.ImageFillVerticalType # The vertical fill type.
 ---@param fillAmount NormalizedPercentage # The normalized percentage of the image that should be revealed.
 function ClientUIImageControl:SetFillVertical(fillVerticalType, fillAmount) end
@@ -60,7 +60,7 @@ function ClientUIImageControl:SetFillVertical(fillVerticalType, fillAmount) end
 ---- Changes are applied even if masking is disabled; masking will not be enabled if disabled when the function is called.
 ---
 ---**See:**
----- [Enum.ImageFillRadial90Type](https://haminpants.github.io/mililua/class/Enum.ImageFillRadial90Type.html) for all radial 90-degree image fill types.
+---- [Enum.ImageFillRadial90Type](https://haminpants.github.io/miliastra-lua-api/class/Enum.ImageFillRadial90Type.html) for all radial 90-degree image fill types.
 ---@param fillRadial90Type EnumItem.ImageFillRadial90Type # The radial 90-degree origin point.
 ---@param fillAmount NormalizedPercentage # The normalized percentage of the image that should be revealed.
 function ClientUIImageControl:SetFillRadial90(fillRadial90Type, fillAmount) end
@@ -69,7 +69,7 @@ function ClientUIImageControl:SetFillRadial90(fillRadial90Type, fillAmount) end
 ---- Changes are applied even if masking is disabled; masking will not be enabled if disabled when the function is called.
 ---
 ---**See:**
----- [Enum.ImageFillRadialType](https://haminpants.github.io/mililua/class/Enum.ImageFillRadialType.html) for all radial image fill types.
+---- [Enum.ImageFillRadialType](https://haminpants.github.io/miliastra-lua-api/class/Enum.ImageFillRadialType.html) for all radial image fill types.
 ---@param fillRadialType EnumItem.ImageFillRadialType # The radial fill origin direction.
 ---@param fillAmount NormalizedPercentage # The normalized percentage of the image that should be revealed.
 function ClientUIImageControl:SetFillRadial180(fillRadialType, fillAmount) end
@@ -78,7 +78,7 @@ function ClientUIImageControl:SetFillRadial180(fillRadialType, fillAmount) end
 ---- Changes are applied even if masking is disabled; masking will not be enabled if disabled when the function is called.
 ---
 ---**See:**
----- [Enum.ImageFillRadialType](https://haminpants.github.io/mililua/class/Enum.ImageFillRadialType.html) for all radial image fill types.
+---- [Enum.ImageFillRadialType](https://haminpants.github.io/miliastra-lua-api/class/Enum.ImageFillRadialType.html) for all radial image fill types.
 ---@param fillRadialType EnumItem.ImageFillRadialType # The radial fill starting position.
 ---@param fillAmount NormalizedPercentage # The normalized percentage of the image that should be revealed.
 function ClientUIImageControl:SetFillRadial360(fillRadialType, fillAmount) end

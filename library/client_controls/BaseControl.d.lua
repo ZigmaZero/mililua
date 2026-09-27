@@ -12,8 +12,8 @@
 ---@field visible boolean # [Read] Whether the Client Control is visible.
 ---@field name string # [Read/Write] The name of the Client Control.
 ---@field parent ClientControlType? # [Read/Write] The parent of the Client Control. Always nil for root-level ControlContainers.
----@field anchoredPositionX number # [Read/Write/Tweenable] The x position of the Client Control's pivot point relative to its anchor point. See [ClientUIBaseControl.GetAnchoredPosition](https://haminpants.github.io/mililua/class/ClientUIBaseControl.html#ClientUIBaseControl.GetAnchoredPosition) for detailed behavior.
----@field anchoredPositionY number # [Read/Write/Tweenable] The y position of the Client Control's pivot point relative to its anchor point. See [ClientUIBaseControl.GetAnchoredPosition](https://haminpants.github.io/mililua/class/ClientUIBaseControl.html#ClientUIBaseControl.GetAnchoredPosition) for detailed behavior.
+---@field anchoredPositionX number # [Read/Write/Tweenable] The x position of the Client Control's pivot point relative to its anchor point. See [ClientUIBaseControl.GetAnchoredPosition](https://haminpants.github.io/miliastra-lua-api/class/ClientUIBaseControl.html#ClientUIBaseControl.GetAnchoredPosition) for detailed behavior.
+---@field anchoredPositionY number # [Read/Write/Tweenable] The y position of the Client Control's pivot point relative to its anchor point. See [ClientUIBaseControl.GetAnchoredPosition](https://haminpants.github.io/miliastra-lua-api/class/ClientUIBaseControl.html#ClientUIBaseControl.GetAnchoredPosition) for detailed behavior.
 ---@field sizeDeltaX number # [Read/Write/Tweenable] The size offset between the width of the Client Control and its x-axis anchor bounds.
 ---@field sizeDeltaY number # [Read/Write/Tweenable] The size offset between the height of the Client Control and its y-axis anchor bounds.
 ---@field anchorMinX NormalizedPercentage # [Read/Write/Tweenable] The minimum x anchor represented as a normalized percentage of the parent's width originating from the bottom-left corner of the parent's bounding box.
@@ -35,7 +35,7 @@ local ClientUIBaseControl = {}
 ---- The callback function must return a boolean which determines whether to mark the event as complete. If marked as complete, subsequent key event listeners of the same event type will be called, even if on a different root-level ContainerControl.
 ---
 ---**See:**
----- [Enum.KeyEventType](https://haminpants.github.io/mililua/class/Enum.KeyEventType.html) for all key event types.
+---- [Enum.KeyEventType](https://haminpants.github.io/miliastra-lua-api/class/Enum.KeyEventType.html) for all key event types.
 ---@param eventType EnumItem.KeyEventType # The key event type to listen for.
 ---@param callback fun(): boolean # The callback function, returning a boolean representing whether to mark the event as completed.
 function ClientUIBaseControl:AddKeyEventListener(eventType, callback) end
@@ -43,7 +43,7 @@ function ClientUIBaseControl:AddKeyEventListener(eventType, callback) end
 ---Registers a controller navigation event listener.
 ---
 ---**See:**
----- [Enum.ControllerNavigationEventType](https://haminpants.github.io/mililua/class/Enum.ControllerNavigationEventType.html) for all controller navigation event types.
+---- [Enum.ControllerNavigationEventType](https://haminpants.github.io/miliastra-lua-api/class/Enum.ControllerNavigationEventType.html) for all controller navigation event types.
 ---@param eventType EnumItem.ControllerNavigationEventType # The controller navigation type to listen for.
 ---@param callback fun() # The function to call when the event is triggered.
 function ClientUIBaseControl:AddNavigationEventListener(eventType, callback) end
@@ -67,8 +67,8 @@ function ClientUIBaseControl:FindChild(path) end
 ---Returns the navigation mode and target for the specified direction.
 ---
 ---**See:**
----- [Enum.ControllerNavigationDir](https://haminpants.github.io/mililua/class/Enum.ControllerNavigationDir.html) for all controller navigation directions.
----- [Enum.ControllerNavigationMode](https://haminpants.github.io/mililua/class/Enum.ControllerNavigationMode.html) for all controller navigation modes.
+---- [Enum.ControllerNavigationDir](https://haminpants.github.io/miliastra-lua-api/class/Enum.ControllerNavigationDir.html) for all controller navigation directions.
+---- [Enum.ControllerNavigationMode](https://haminpants.github.io/miliastra-lua-api/class/Enum.ControllerNavigationMode.html) for all controller navigation modes.
 ---@param navigationDir EnumItem.ControllerNavigationDir # The direction to get navigation settings for.
 ---@return EnumItem.ControllerNavigationMode navigationMode # The navigation mode for the specified direction.
 ---@return ClientControlType? navigationTarget # The target Client Control. Only set for the Specified navigation mode.
@@ -157,7 +157,7 @@ function ClientUIBaseControl:RemoveAllNavigationEventListeners() end
 ---Removes the specified key event listener from the Client Control.
 ---
 ---**See:**
----- [Enum.KeyEventType](https://haminpants.github.io/mililua/class/Enum.KeyEventType.html) for all key event types.
+---- [Enum.KeyEventType](https://haminpants.github.io/miliastra-lua-api/class/Enum.KeyEventType.html) for all key event types.
 ---@param eventType EnumItem.KeyEventType # The event type to remove the callback from.
 ---@param callback fun(): boolean # The callback function to remove.
 function ClientUIBaseControl:RemoveKeyEventListener(eventType, callback) end
@@ -165,14 +165,14 @@ function ClientUIBaseControl:RemoveKeyEventListener(eventType, callback) end
 ---Removes all key event listeners for the specified event type from the Client Control.
 ---
 ---**See:**
----- [Enum.KeyEventType](https://haminpants.github.io/mililua/class/Enum.KeyEventType.html) for all key event types.
+---- [Enum.KeyEventType](https://haminpants.github.io/miliastra-lua-api/class/Enum.KeyEventType.html) for all key event types.
 ---@param eventType EnumItem.KeyEventType # The event type to clear listeners from.
 function ClientUIBaseControl:RemoveKeyEventListeners(eventType) end
 
 ---Removes the specified controller navigation event listener from the Client Control.
 ---
 ---**See:**
----- [Enum.ControllerNavigationEventType](https://haminpants.github.io/mililua/class/Enum.ControllerNavigationEventType.html) for all controller navigation event types.
+---- [Enum.ControllerNavigationEventType](https://haminpants.github.io/miliastra-lua-api/class/Enum.ControllerNavigationEventType.html) for all controller navigation event types.
 ---@param eventType EnumItem.ControllerNavigationEventType # The event type to remove the callback from.
 ---@param callback fun() # The callback function to remove.
 function ClientUIBaseControl:RemoveNavigationEventListener(eventType, callback) end
@@ -180,7 +180,7 @@ function ClientUIBaseControl:RemoveNavigationEventListener(eventType, callback) 
 ---Removes all listeners for the specified event type from the Client Control.
 ---
 ---**See:**
----- [Enum.ControllerNavigationEventType](https://haminpants.github.io/mililua/class/Enum.ControllerNavigationEventType.html) for all controller navigation event types.
+---- [Enum.ControllerNavigationEventType](https://haminpants.github.io/miliastra-lua-api/class/Enum.ControllerNavigationEventType.html) for all controller navigation event types.
 ---@param eventType EnumItem.ControllerNavigationEventType # The event type to clear listeners from.
 function ClientUIBaseControl:RemoveNavigationEventListeners(eventType) end
 
@@ -203,7 +203,7 @@ function ClientUIBaseControl:SetAnchorMin(x, y) end
 ---- If anchorMin equals to anchorMax on a given axis, the anchor point for that axis resolves to anchorMin.
 ---
 ---**See:**
----- [ClientUIBaseControl.GetAnchoredPosition](https://haminpants.github.io/mililua/class/ClientUIBaseControl.html#ClientUIBaseControl.GetAnchoredPosition) for detailed anchor point behavior.
+---- [ClientUIBaseControl.GetAnchoredPosition](https://haminpants.github.io/miliastra-lua-api/class/ClientUIBaseControl.html#ClientUIBaseControl.GetAnchoredPosition) for detailed anchor point behavior.
 ---@param x number # The x position of the pivot point relative to the anchor point.
 ---@param y number # The y position of the pivot point relative to the anchor point.
 function ClientUIBaseControl:SetAnchoredPosition(x, y) end
@@ -213,7 +213,7 @@ function ClientUIBaseControl:SetAnchoredPosition(x, y) end
 ---- Returns false only when called on a root-level ContainerControl.
 ---
 ---**See:**
----- [ClientUIBaseControl.GetSiblingIndex](https://haminpants.github.io/mililua/class/ClientUIBaseControl.html#ClientUIBaseControl.GetSiblingIndex) for detailed sibling-index behavior.
+---- [ClientUIBaseControl.GetSiblingIndex](https://haminpants.github.io/miliastra-lua-api/class/ClientUIBaseControl.html#ClientUIBaseControl.GetSiblingIndex) for detailed sibling-index behavior.
 ---@return boolean unknown # Always true?
 function ClientUIBaseControl:SetAsFirstSibling() end
 
@@ -222,7 +222,7 @@ function ClientUIBaseControl:SetAsFirstSibling() end
 ---- Returns false only when called on a root-level ContainerControl.
 ---
 ---**See:**
----- [ClientUIBaseControl.GetSiblingIndex](https://haminpants.github.io/mililua/class/ClientUIBaseControl.html#ClientUIBaseControl.GetSiblingIndex) for detailed sibling-index behavior.
+---- [ClientUIBaseControl.GetSiblingIndex](https://haminpants.github.io/miliastra-lua-api/class/ClientUIBaseControl.html#ClientUIBaseControl.GetSiblingIndex) for detailed sibling-index behavior.
 ---@return boolean unknown # Always true?
 function ClientUIBaseControl:SetAsLastSibling() end
 
@@ -230,8 +230,8 @@ function ClientUIBaseControl:SetAsLastSibling() end
 ---- If Enum.ControllerNavigationMode.Specified is passed and the navigation target is nil, the navigation mode will be set to None.
 ---
 ---**See:**
----- [Enum.ControllerNavigationDir](https://haminpants.github.io/mililua/class/Enum.ControllerNavigationDir.html) for all controller navigation directions.
----- [Enum.ControllerNavigationMode](https://haminpants.github.io/mililua/class/Enum.ControllerNavigationMode.html) for all controller navigation modes.
+---- [Enum.ControllerNavigationDir](https://haminpants.github.io/miliastra-lua-api/class/Enum.ControllerNavigationDir.html) for all controller navigation directions.
+---- [Enum.ControllerNavigationMode](https://haminpants.github.io/miliastra-lua-api/class/Enum.ControllerNavigationMode.html) for all controller navigation modes.
 ---@param navigationDir EnumItem.ControllerNavigationDir # The navigation direction to apply the navigation mode to.
 ---@param navigationMode EnumItem.ControllerNavigationMode # The navigation mode to use.
 ---@param navigationTarget? ClientControlType # The navigation target. Required if the Specified navigation mode is passed, otherwise this parameter is ignored.
@@ -259,7 +259,7 @@ function ClientUIBaseControl:SetPivot(x, y) end
 ---- Returns false only when called on a root-level ContainerControl.
 ---
 ---**See:**
----- [ClientUIBaseControl.GetSiblingIndex](https://haminpants.github.io/mililua/class/ClientUIBaseControl.html#ClientUIBaseControl.GetSiblingIndex) for detailed sibling-index behavior.
+---- [ClientUIBaseControl.GetSiblingIndex](https://haminpants.github.io/miliastra-lua-api/class/ClientUIBaseControl.html#ClientUIBaseControl.GetSiblingIndex) for detailed sibling-index behavior.
 ---@param index integer # The 0-indexed position in the parent's list of children. Automatically clamped within the valid range of indexes.
 ---@return boolean success # Whether the sibling index was changed.
 function ClientUIBaseControl:SetSiblingIndex(index) end
