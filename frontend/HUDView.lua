@@ -1,7 +1,11 @@
 local class = require("core.class")
 
+---@class HUDView
+---@field new fun(frontend: MiliastraFrontend): HUDView
 local HUDView = class()
 
+---@param frontend MiliastraFrontend
+---@param game Game
 function HUDView:init(frontend, game)
     self.frontend = frontend
     self.game = game
@@ -28,6 +32,13 @@ function HUDView:setInfo(text)
     )
 end
 
+function HUDView:setSpecs(text)
+    self.frontend:setText(
+        "specs",
+        text
+    )
+end
+
 function HUDView:showSuccess()
     self:setStatus("Circuit complete!")
 end
@@ -39,7 +50,7 @@ end
 function HUDView:bindTestButton(reference)
     self.frontend:onClick(
         reference,
-        function()
+        function(x, y)
             self:onTest()
         end
     )

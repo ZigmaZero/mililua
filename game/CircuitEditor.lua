@@ -1,6 +1,8 @@
 local class = require "core.class"
 local ComponentView = require "frontend.ComponentView"
 local WireView      = require "frontend.WireView"
+---@class CircuitEditor
+---@field new fun(circuit: Circuit, frontend: MiliastraFrontend): Game
 local CircuitEditor = class()
 
 ---@param circuit Circuit

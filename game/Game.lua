@@ -1,4 +1,7 @@
 local class = "core.class"
+
+---@class Game
+---@field new fun(frontend: MiliastraFrontend): Game
 local Game = class()
 local CircuitEditor = require "game.CircuitEditor"
 local CircuitBuilder = require "game.CircuitBuilder"
@@ -20,6 +23,7 @@ function Game:init(frontend)
     self.hud = nil
 end
 
+---@param level Puzzle
 function Game:loadLevel(level)
     self.currentLevel = level
 
@@ -37,7 +41,9 @@ function Game:loadLevel(level)
 
     self.palette = ComponentPalette.new(self.editor, self.frontend)
 
-    self.hud:setLevelInfo(level.name, level.description)
+    self.hud:setLevelName(level.name)
+    self.hud:setInfo(level.info)
+    self.hud:setSpecs(level.specs)
 end
 
 function Game:testCircuit()

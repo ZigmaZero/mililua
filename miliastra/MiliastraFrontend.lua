@@ -1,10 +1,46 @@
 local CircuitComponentType = require "circuit.components.CircuitComponentType"
+local ControlDimensionsUtils = require "utils.ControlDimensionsUtils"
 local class = "core.class"
 
+---@class MiliastraFrontend
 local MiliastraFrontend = class()
 
 function MiliastraFrontend:init(uiRoot)
     self.uiRoot = uiRoot
+
+    self.textRegistry = {}
+end
+
+-- Set text
+
+function MiliastraFrontend:setText(textKey, text)
+    if not self.textRegistry[textKey] then
+        self.textRegistry[textKey] = {
+            text = text,
+            observers = {}
+        }
+    else
+        self.textRegistry[textKey].text = text
+        for index, reference in ipairs(self.textRegistry[textKey].observers) do
+            reference.text = self.textRegistry[textKey].text
+        end
+    end
+end
+
+---@param textKey string
+---@param reference ClientUITextBoxControl | ClientUITextWindowControl
+function MiliastraFrontend:registerTextListener(textKey, reference)
+    if not self.textRegistry[textKey] then
+        self.textRegistry[textKey] = {
+            reference.text,
+            observers = {
+                reference
+            }
+        }
+    else
+        table.insert(self.textRegistry[textKey].observers, reference)
+        reference.text = self.textRegistry[textKey].text
+    end
 end
 
 -- Object Creation
@@ -52,79 +88,114 @@ function MiliastraFrontend:getOutputPortReference(
     -- the specified output socket.
 end
 
--- Event registration
-
+---@param object ClientControlType
+---@param callback fun(x: number, y: number)
 function MiliastraFrontend:onClick(
     object,
     callback
 )
-    -- TODO:
-    -- Register a MiliLua click listener on object.
+    object:AddCursorEventListener(Enum.CursorEventType.CursorClick, function (eventData)
+        local x, y = eventData:GetPressUIPos()
+        callback(x, y)
+    end)
 end
 
+---@param object ClientControlType
+---@param callback fun(x: number, y: number)
 function MiliastraFrontend:onDragStart(
     object,
     callback
 )
-    -- TODO:
-    -- Register the MiliLua drag-start listener.
+    object:AddCursorEventListener(Enum.CursorEventType.CursorBeginDrag, function (eventData)
+        local x, y = eventData:GetUIPos()
+        callback(x, y)
+    end)
 end
 
+---@param object ClientControlType
+---@param callback fun(x: number, y: number)
 function MiliastraFrontend:onDrag(
     object,
     callback
 )
-    -- TODO:
-    -- Register the MiliLua drag listener.
-    -- Pass cursor coordinates to callback.
+    object:AddCursorEventListener(Enum.CursorEventType.CursorDrag, function (eventData)
+        local x, y = eventData:GetUIPos()
+        if eventData.dragging then
+            callback(x, y)
+        end
+    end)
 end
 
+---@param object ClientControlType
+---@param callback fun(x: number, y: number)
 function MiliastraFrontend:onDragEnd(
     object,
     callback
 )
-    -- TODO:
-    -- Register the MiliLua drag-end listener.
+    object:AddCursorEventListener(Enum.CursorEventType.CursorEndDrag, function (eventData)
+        local x, y = eventData:GetUIPos()
+        callback(x, y)
+    end)
 end
 
+---@param object ClientControlType
+---@param callback fun(x: number, y: number)
 function MiliastraFrontend:onRMB(
     object,
     callback
 )
-    -- TODO:
-    -- Register the right-mouse-button listener.
-    -- This also registers for shift due to the
-    -- Miliastra restriction.
+    object:AddKeyEventListener(Enum.KeyEventType.KeyboardSprintKeyDown, function ()
+        object:AddKeyEventListener(Enum.KeyEventType.KeyboardSprintKeyUp, function ()
+            local x, y = game.GetCursorUIPos()
+            callback(x, y)
+            return true
+        end)
+        return true
+    end)
 end
 
 -- Object manipulation
-
+---@param object ClientControlType
+---@param x number
+---@param y number
 function MiliastraFrontend:setPosition(
     object,
     x,
     y
 )
-    -- TODO:
-    -- Set the position of the MiliLua object.
+    local h0 = ControlDimensionsUtils.getUnscaledMinHeight(object.parent)
+    local h1 = ControlDimensionsUtils.getUnscaledMaxHeight(object.parent)
+    local w0 = ControlDimensionsUtils.getUnscaledMinWidth(object.parent)
+    local w1 = ControlDimensionsUtils.getUnscaledMaxWidth(object.parent)
+    local anchorHeight = (h1 + h0) / 2
+    local anchorWidth = (w1 + w0) / 2
+    object:SetAnchoredPosition(x - anchorWidth, y - anchorHeight)
 end
 
+---@param object ClientControlType
+---@param dragging boolean
 function MiliastraFrontend:setDragging(
     object,
     dragging
 )
-    -- TODO:
-    -- Apply any visual state needed while dragging.
+    if dragging then
+        object:SetAsLastSibling()
+    else
+        object:SetAsFirstSibling()
+    end
 end
 
+---@param object ClientControlType
+---@param cursorX number
+---@param cursorY number
+---@return number landingX
+---@return number landingY
 function MiliastraFrontend:getDropPosition(
     object,
     cursorX,
     cursorY
 )
-    -- TODO:
-    -- Calculate the final position using the
-    -- required distance from the cursor center.
-    return cursorX, cursorY
+    return cursorX, cursorY - 15
 end
 
 function MiliastraFrontend:setWireEndPosition(
@@ -138,8 +209,7 @@ function MiliastraFrontend:setWireEndPosition(
 end
 
 function MiliastraFrontend:destroyObject(object)
-    -- TODO:
-    -- Destroy/remove the associated MiliLua object.
+    game.DestroyClientUIControl(object)
 end
 
 -- Port hit testing

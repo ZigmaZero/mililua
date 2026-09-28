@@ -7,6 +7,8 @@ local Puzzle = class()
 function Puzzle:init(definition)
     self.id = definition.id
     self.name = definition.name
+    self.info = definition.info
+    self.specs = definition.specs
 
     self.inputs = definition.inputs
     self.outputs = definition.outputs

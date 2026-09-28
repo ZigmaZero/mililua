@@ -5,6 +5,10 @@ local OutputPortView = require("frontend.OutputPortView")
 
 local ComponentView = class(View)
 
+---@param component CircuitComponent
+---@param frontend MiliastraFrontend
+---@param reference ClientControlType
+---@param editor CircuitEditor
 function ComponentView:init(component, frontend, reference, editor)
     View.init(self, frontend)
 
