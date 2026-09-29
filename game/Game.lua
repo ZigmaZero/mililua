@@ -10,6 +10,7 @@ local HUDView = require "frontend.HUDView"
 local LevelManager = require "puzzle.LevelManager"
 local CircuitComponentType = require "circuit.components.CircuitComponentType"
 
+---@param frontend MiliastraFrontend
 function Game:init(frontend)
     self.frontend = frontend
 

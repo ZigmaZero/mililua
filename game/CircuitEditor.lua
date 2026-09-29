@@ -6,13 +6,12 @@ local WireView      = require "frontend.WireView"
 local CircuitEditor = class()
 
 ---@param circuit Circuit
+---@param frontend MiliastraFrontend
 function CircuitEditor:init(circuit, frontend)
     self.circuit = circuit
     self.frontend = frontend
 
     self.componentViews = {}
-    self.inputPortViews = {}
-    self.outputPortViews = {}
     self.wireViews = {}
 
     self.temporaryWireViews = {}
@@ -90,6 +89,8 @@ function CircuitEditor:createNode(componentType, x, y, name)
     return view
 end
 
+---@param source OutputPort
+---@param destination InputPort
 function CircuitEditor:connectPorts(
     source,
     destination
@@ -101,25 +102,19 @@ function CircuitEditor:connectPorts(
         return nil
     end
 
-    local output
-    local input
-
-    if source.type == "OUTPUT" then
-        output = source
-        input = destination
-    else
-        output = destination
-        input = source
-    end
-
     local wire =
         self.circuit:connect(
-            output,
-            input
+            source,
+            destination
         )
+
+    local sourceRef = self.componentViews[source.owner.id].reference
+    local destRef = self.componentViews[destination.owner.id].reference
 
     local reference =
         self.frontend:createWireVisual(
+            sourceRef,
+            destRef,
             wire
         )
 
@@ -146,14 +141,20 @@ function CircuitEditor:isOppositePortPair(a, b)
     )
 end
 
+---@param port Port
+---@param x any
+---@param y any
+---@return table
 function CircuitEditor:createTemporaryWire(
     port,
     x,
     y
 )
+    local portRef = self.componentViews[port.owner.id].reference
     local reference =
         self.frontend:createTemporaryWireVisual(
-            port,
+            portRef,
+            port.index,
             x,
             y
         )

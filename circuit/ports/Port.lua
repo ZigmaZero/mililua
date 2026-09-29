@@ -10,6 +10,7 @@ function Port:init(owner, index)
     self.owner = owner
     self.index = index
     self.value = false
+    self.type = nil
 end
 
 ---@return boolean

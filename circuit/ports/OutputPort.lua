@@ -8,7 +8,7 @@ local OutputPort = class(Port)
 
 function OutputPort:init(owner, index)
     Port.init(self, owner, index)
-
+    self.type = "out"
     self.connections = {}
 end
 

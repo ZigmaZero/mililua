@@ -2,6 +2,8 @@ local Circuit = require "circuit.Circuit"
 
 local CircuitBuilder = {}
 
+---@param level Puzzle
+---@return Circuit
 function CircuitBuilder:fromLevel(level)
     local circuit = Circuit:new()
 

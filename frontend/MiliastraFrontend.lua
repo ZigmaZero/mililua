@@ -96,21 +96,93 @@ function MiliastraFrontend:createComponentVisual(component, x, y)
 end
 
 ---@param wire Wire
-function MiliastraFrontend:createWireVisual(wire)
-    local sourceX = wire.source.owner.x
-    -- TODO:
-    -- Create the MiliLua object(s) used to render a permanent wire.
-    -- Return the reference object
+function MiliastraFrontend:createWireVisual(sourceRef, destRef, wire)
+    local mask = self.uiRoot:FindChild("CircuitPage/CircuitArea/Mask")
+    if not mask then
+        return
+    end
+
+    local reference = game.InstantiateClientUIControl(1073742354, mask)
+    return self:updateWireVisual(sourceRef, destRef, wire, reference)
+end
+
+---@param sourceRef ClientControlType
+---@param destRef ClientControlType
+---@param wire Wire
+---@param visual ClientControlType
+---@return ClientControlType?
+function MiliastraFrontend:updateWireVisual(sourceRef, destRef, wire, visual)
+    local mask = self.uiRoot:FindChild("CircuitPage/CircuitArea/Mask")
+    if not mask then
+        return
+    end
+    local srcPortIdx = wire.source.index
+    local dstPortIdx = wire.destination.index
+    local sourceCtrl = self:getOutputPortReference(sourceRef, srcPortIdx)
+    local destCtrl = self:getOutputPortReference(destRef, dstPortIdx)
+
+    if not sourceCtrl or not destCtrl then
+        return visual
+    end
+    ---@cast sourceCtrl ClientControlType
+    ---@cast destCtrl ClientControlType
+    local sourceX = (ControlDimensionsUtils.getUnscaledMaxWidth(sourceCtrl) + ControlDimensionsUtils.getUnscaledMinWidth(sourceCtrl))/2
+    local sourceY = (ControlDimensionsUtils.getUnscaledMaxHeight(sourceCtrl) + ControlDimensionsUtils.getUnscaledMinHeight(sourceCtrl))/2
+    local destX = (ControlDimensionsUtils.getUnscaledMaxWidth(destCtrl) + ControlDimensionsUtils.getUnscaledMinWidth(destCtrl))/2
+    local destY = (ControlDimensionsUtils.getUnscaledMaxHeight(destCtrl) + ControlDimensionsUtils.getUnscaledMinHeight(destCtrl))/2
+
+    local deltaX = destX - sourceX
+    local deltaY = destY - sourceY
+    local wireX = (sourceX + destX) / 2
+    local wireY = (sourceY + destY) / 2
+    local wireSizeDelta = math.sqrt(deltaX * deltaX + deltaY * deltaY)
+    local wireRotation = math.deg(math.atan(deltaY, deltaX))
+
+    visual.sizeDeltaX = wireSizeDelta
+
+    -- Set object x, y
+    local maskMidX = (ControlDimensionsUtils.getUnscaledMaxWidth(mask) + ControlDimensionsUtils.getUnscaledMinWidth(mask))/2
+    local maskMidY = (ControlDimensionsUtils.getUnscaledMaxHeight(mask) + ControlDimensionsUtils.getUnscaledMinHeight(mask))/2
+    visual:SetAnchoredPosition(wireX - maskMidX, wireY - maskMidY)
+    visual:SetLocalRotation(0, 0, wireRotation)
+
+    return visual
 end
 
 function MiliastraFrontend:createTemporaryWireVisual(
-    port,
+    sourceRef,
+    portIdx,
     x,
     y
 )
-    -- TODO:
-    -- Create a temporary wire visual beginning at the port.
-    -- Return the reference object.
+    local mask = self.uiRoot:FindChild("CircuitPage/CircuitArea/Mask")
+    if not mask then
+        return
+    end
+    local visual = game.InstantiateClientUIControl(1073742354, mask)
+    local sourceCtrl = self:getOutputPortReference(sourceRef, portIdx)
+    if not sourceCtrl then
+        return visual
+    end
+    local sourceX = (ControlDimensionsUtils.getUnscaledMaxWidth(sourceCtrl) + ControlDimensionsUtils.getUnscaledMinWidth(sourceCtrl))/2
+    local sourceY = (ControlDimensionsUtils.getUnscaledMaxHeight(sourceCtrl) + ControlDimensionsUtils.getUnscaledMinHeight(sourceCtrl))/2
+    
+    local deltaX = x - sourceX
+    local deltaY = y - sourceY
+    local wireX = (sourceX + x) / 2
+    local wireY = (sourceY + y) / 2
+    local wireSizeDelta = math.sqrt(deltaX * deltaX + deltaY * deltaY)
+    local wireRotation = math.deg(math.atan(deltaY, deltaX))
+
+    visual.sizeDeltaX = wireSizeDelta
+
+    -- Set object x, y
+    local maskMidX = (ControlDimensionsUtils.getUnscaledMaxWidth(mask) + ControlDimensionsUtils.getUnscaledMinWidth(mask))/2
+    local maskMidY = (ControlDimensionsUtils.getUnscaledMaxHeight(mask) + ControlDimensionsUtils.getUnscaledMinHeight(mask))/2
+    visual:SetAnchoredPosition(wireX - maskMidX, wireY - maskMidY)
+    visual:SetLocalRotation(0, 0, wireRotation)
+
+    return visual
 end
 
 -- Port references
@@ -263,13 +335,38 @@ function MiliastraFrontend:getDropPosition(
 end
 
 function MiliastraFrontend:setWireEndPosition(
-    object,
+    sourceRef,
+    portIdx,
     x,
-    y
+    y,
+    object
 )
-    -- TODO:
-    -- Move the free end of a temporary wire
-    -- to the specified cursor position.
+    local mask = self.uiRoot:FindChild("CircuitPage/CircuitArea/Mask")
+    if not mask then
+        return
+    end
+    local visual = game.InstantiateClientUIControl(1073742354, mask)
+    local sourceCtrl = self:getOutputPortReference(sourceRef, portIdx)
+    if not sourceCtrl then
+        return visual
+    end
+    local sourceX = (ControlDimensionsUtils.getUnscaledMaxWidth(sourceCtrl) + ControlDimensionsUtils.getUnscaledMinWidth(sourceCtrl))/2
+    local sourceY = (ControlDimensionsUtils.getUnscaledMaxHeight(sourceCtrl) + ControlDimensionsUtils.getUnscaledMinHeight(sourceCtrl))/2
+    
+    local deltaX = x - sourceX
+    local deltaY = y - sourceY
+    local wireX = (sourceX + x) / 2
+    local wireY = (sourceY + y) / 2
+    local wireSizeDelta = math.sqrt(deltaX * deltaX + deltaY * deltaY)
+    local wireRotation = math.deg(math.atan(deltaY, deltaX))
+
+    visual.sizeDeltaX = wireSizeDelta
+
+    -- Set object x, y
+    local maskMidX = (ControlDimensionsUtils.getUnscaledMaxWidth(mask) + ControlDimensionsUtils.getUnscaledMinWidth(mask))/2
+    local maskMidY = (ControlDimensionsUtils.getUnscaledMaxHeight(mask) + ControlDimensionsUtils.getUnscaledMinHeight(mask))/2
+    visual:SetAnchoredPosition(wireX - maskMidX, wireY - maskMidY)
+    visual:SetLocalRotation(0, 0, wireRotation)
 end
 
 function MiliastraFrontend:destroyObject(object)

@@ -9,6 +9,7 @@ local InputPort = class(Port)
 ---@param index integer
 function InputPort:init(owner, index)
     Port.init(self, owner, index)
+    self.type = "in"
     self.connection = nil
 end
 

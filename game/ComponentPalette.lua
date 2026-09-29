@@ -1,6 +1,8 @@
 local class = "core.class"
 local ComponentPalette = class()
 
+---@param editor CircuitEditor
+---@param frontend MiliastraFrontend
 function ComponentPalette:init(editor, frontend)
     self.editor = editor
     self.frontend = frontend
