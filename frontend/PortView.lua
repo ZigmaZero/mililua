@@ -52,7 +52,7 @@ function PortView:onDrag(x, y)
         return
     end
 
-    self.wireView:setCursorPosition(x, y)
+    self.wireView:setCursorPosition(self, x, y)
 end
 
 function PortView:onDragEnd(x, y)

@@ -22,8 +22,9 @@ function WireView:_bindListeners()
     )
 end
 
-function WireView:setCursorPosition(x, y)
+function WireView:setCursorPosition(portView, x, y)
     self.frontend:setWireEndPosition(
+        portView.reference,
         self.reference,
         x,
         y

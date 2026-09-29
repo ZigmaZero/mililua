@@ -62,27 +62,27 @@ function MiliastraFrontend:createComponentVisual(component, x, y)
     reference:GetChild("TextBoxControl").text = component:getType()
     local inputs = #component.inputs
     reference:GetChild("InputPins"):RefreshItems(inputs, function(control, index)
-        control:AddCursorEventListener(Enum.CursorEventType.CursorEnter, function(eventData)
+        control:GetChild("CursorEventArea"):AddCursorEventListener(Enum.CursorEventType.CursorEnter, function(eventData)
             self.hoveringPort = {
                 id = reference.id,
                 inOut = "in",
                 port = index + 1
             }
         end)
-        control:AddCursorEventListener(Enum.CursorEventType.CursorExit, function(eventData)
+        control:GetChild("CursorEventArea"):AddCursorEventListener(Enum.CursorEventType.CursorExit, function(eventData)
             self.hoveringPort = nil
         end)
     end)
     local outputs = #component.outputs
     reference:GetChild("OutputPins"):RefreshItems(outputs, function(control, index)
-        control:AddCursorEventListener(Enum.CursorEventType.CursorEnter, function(eventData)
+        control:GetChild("CursorEventArea"):AddCursorEventListener(Enum.CursorEventType.CursorEnter, function(eventData)
             self.hoveringPort = {
                 id = reference.id,
                 inOut = "out",
                 port = index + 1
             }
         end)
-        control:AddCursorEventListener(Enum.CursorEventType.CursorExit, function(eventData)
+        control:GetChild("CursorEventArea"):AddCursorEventListener(Enum.CursorEventType.CursorExit, function(eventData)
             self.hoveringPort = nil
         end)
     end)
@@ -102,7 +102,7 @@ function MiliastraFrontend:createWireVisual(sourceRef, destRef, wire)
         return
     end
 
-    local reference = game.InstantiateClientUIControl(1073742354, mask)
+    local reference = game.InstantiateClientUIControl(1073742363, mask)
     return self:updateWireVisual(sourceRef, destRef, wire, reference)
 end
 
@@ -230,7 +230,7 @@ function MiliastraFrontend:onClick(
     object,
     callback
 )
-    object:AddCursorEventListener(Enum.CursorEventType.CursorClick, function(eventData)
+    object:GetChild("CursorEventArea"):AddCursorEventListener(Enum.CursorEventType.CursorClick, function(eventData)
         local x, y = eventData:GetPressUIPos()
         callback(x, y)
     end)
@@ -242,7 +242,7 @@ function MiliastraFrontend:onDragStart(
     object,
     callback
 )
-    object:AddCursorEventListener(Enum.CursorEventType.CursorBeginDrag, function(eventData)
+    object:GetChild("CursorEventArea"):AddCursorEventListener(Enum.CursorEventType.CursorBeginDrag, function(eventData)
         local x, y = eventData:GetUIPos()
         callback(x, y)
     end)
@@ -254,7 +254,7 @@ function MiliastraFrontend:onDrag(
     object,
     callback
 )
-    object:AddCursorEventListener(Enum.CursorEventType.CursorDrag, function(eventData)
+    object:GetChild("CursorEventArea"):AddCursorEventListener(Enum.CursorEventType.CursorDrag, function(eventData)
         local x, y = eventData:GetUIPos()
         if eventData.dragging then
             callback(x, y)
@@ -268,7 +268,7 @@ function MiliastraFrontend:onDragEnd(
     object,
     callback
 )
-    object:AddCursorEventListener(Enum.CursorEventType.CursorEndDrag, function(eventData)
+    object:GetChild("CursorEventArea"):AddCursorEventListener(Enum.CursorEventType.CursorEndDrag, function(eventData)
         local x, y = eventData:GetUIPos()
         callback(x, y)
     end)
@@ -335,13 +335,34 @@ function MiliastraFrontend:getDropPosition(
 end
 
 function MiliastraFrontend:setWireEndPosition(
-    object,
+    portReference,
+    wireReference,
     x,
     y
 )
-    -- TODO:
-    -- Move the free end of a temporary wire
-    -- to the specified cursor position.
+    local sourceCtrl = portReference
+    local visual = wireReference
+    local mask = self.uiRoot:FindChild("CircuitPage/CircuitArea/Mask")
+
+    local sourceX = (ControlDimensionsUtils.getUnscaledMaxWidth(sourceCtrl) + ControlDimensionsUtils.getUnscaledMinWidth(sourceCtrl))/2
+    local sourceY = (ControlDimensionsUtils.getUnscaledMaxHeight(sourceCtrl) + ControlDimensionsUtils.getUnscaledMinHeight(sourceCtrl))/2
+    
+    local deltaX = x - sourceX
+    local deltaY = y - sourceY
+    local wireX = (sourceX + x) / 2
+    local wireY = (sourceY + y) / 2
+    local wireSizeDelta = math.sqrt(deltaX * deltaX + deltaY * deltaY)
+    local wireRotation = math.deg(math.atan(deltaY, deltaX))
+
+    visual.sizeDeltaX = wireSizeDelta
+
+    -- Set object x, y
+    local maskMidX = (ControlDimensionsUtils.getUnscaledMaxWidth(mask) + ControlDimensionsUtils.getUnscaledMinWidth(mask))/2
+    local maskMidY = (ControlDimensionsUtils.getUnscaledMaxHeight(mask) + ControlDimensionsUtils.getUnscaledMinHeight(mask))/2
+    visual:SetAnchoredPosition(wireX - maskMidX, wireY - maskMidY)
+    visual:SetLocalRotation(0, 0, wireRotation)
+
+    return visual
 end
 
 function MiliastraFrontend:destroyObject(object)
@@ -359,7 +380,7 @@ end
 
 -- Palette Entry
 
-function MiliastraFrontend:createPalette(entries)
+function MiliastraFrontend:createPalette(entries, callback)
     local grid = self.uiRoot:FindChild("CircuitPage/PaletteArea/GridScrollerControl")
     if not grid then
         return
@@ -392,6 +413,10 @@ function MiliastraFrontend:createPalette(entries)
         end)
         local outputs = ComponentTypeToInOutCount[entries[index + 1]][2]
         reference:GetChild("OutputPins"):RefreshItems(outputs, function(control, index)
+        end)
+
+        control:GetChild("CursorEventArea"):AddCursorEventListener(Enum.CursorEventType.CursorClick, function (eventData)
+            callback(index+1)
         end)
     end)
 end
