@@ -66,4 +66,14 @@ function Game:testCircuit()
     return result
 end
 
+function Game:exitLevel()
+    self.currentLevel = nil
+    self.circuit = nil
+
+    self.editor = nil
+    self.palette = nil
+
+    -- screw it just clear the entire frontend
+end
+
 return Game

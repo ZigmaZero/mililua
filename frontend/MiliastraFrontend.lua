@@ -419,6 +419,24 @@ function MiliastraFrontend:createPalette(entries, callback)
             callback(index+1)
         end)
     end)
+
+    local retval = {}
+    for index, value in ipairs(grid:GetChildren()) do
+        retval[grid:GetItemIndex(value)] = value
+    end
+
+    return retval
+end
+
+function MiliastraFrontend:cleanupCircuitPage()
+    -- nuke it
+    self.uiRoot:FindChild("CircuitPage/PaletteArea/GridScrollerControl"):RefreshItems(0, function(control, index)
+        -- nothing
+    end)
+    local mask = self.uiRoot:FindChild("CircuitPage/CircuitArea/Mask")
+    for index, value in ipairs(mask:GetChildren()) do
+        game.DestroyClientUIControl(value)
+    end
 end
 
 return MiliastraFrontend

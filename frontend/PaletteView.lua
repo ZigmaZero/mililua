@@ -85,4 +85,8 @@ function PaletteView:onDragEnd(x, y)
     self.draggedComponent = nil
 end
 
+function PaletteView:destroy()
+    self.frontend:destroyObject(self.reference)
+end
+
 return PaletteView

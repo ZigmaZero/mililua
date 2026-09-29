@@ -17,6 +17,10 @@ function M.switchPage(newPage)
     root:GetChild(page):SetActive(true)
 end
 
+function M.setPopup(enable)
+    root:GetChild("Popup"):SetActive(enable)
+end
+
 function OnInit()
     Global.initGame(root)
     M.switchPage("TitlePage")
