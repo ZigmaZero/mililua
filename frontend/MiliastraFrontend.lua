@@ -335,38 +335,13 @@ function MiliastraFrontend:getDropPosition(
 end
 
 function MiliastraFrontend:setWireEndPosition(
-    sourceRef,
-    portIdx,
+    object,
     x,
-    y,
-    object
+    y
 )
-    local mask = self.uiRoot:FindChild("CircuitPage/CircuitArea/Mask")
-    if not mask then
-        return
-    end
-    local visual = game.InstantiateClientUIControl(1073742354, mask)
-    local sourceCtrl = self:getOutputPortReference(sourceRef, portIdx)
-    if not sourceCtrl then
-        return visual
-    end
-    local sourceX = (ControlDimensionsUtils.getUnscaledMaxWidth(sourceCtrl) + ControlDimensionsUtils.getUnscaledMinWidth(sourceCtrl))/2
-    local sourceY = (ControlDimensionsUtils.getUnscaledMaxHeight(sourceCtrl) + ControlDimensionsUtils.getUnscaledMinHeight(sourceCtrl))/2
-    
-    local deltaX = x - sourceX
-    local deltaY = y - sourceY
-    local wireX = (sourceX + x) / 2
-    local wireY = (sourceY + y) / 2
-    local wireSizeDelta = math.sqrt(deltaX * deltaX + deltaY * deltaY)
-    local wireRotation = math.deg(math.atan(deltaY, deltaX))
-
-    visual.sizeDeltaX = wireSizeDelta
-
-    -- Set object x, y
-    local maskMidX = (ControlDimensionsUtils.getUnscaledMaxWidth(mask) + ControlDimensionsUtils.getUnscaledMinWidth(mask))/2
-    local maskMidY = (ControlDimensionsUtils.getUnscaledMaxHeight(mask) + ControlDimensionsUtils.getUnscaledMinHeight(mask))/2
-    visual:SetAnchoredPosition(wireX - maskMidX, wireY - maskMidY)
-    visual:SetLocalRotation(0, 0, wireRotation)
+    -- TODO:
+    -- Move the free end of a temporary wire
+    -- to the specified cursor position.
 end
 
 function MiliastraFrontend:destroyObject(object)

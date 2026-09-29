@@ -4,11 +4,9 @@ local class = "core.class"
 ---@field new fun(frontend: MiliastraFrontend): Game
 local Game = class()
 local CircuitEditor = require "game.CircuitEditor"
-local CircuitBuilder = require "game.CircuitBuilder"
 local ComponentPalette = require "game.ComponentPalette"
-local HUDView = require "frontend.HUDView"
 local LevelManager = require "puzzle.LevelManager"
-local CircuitComponentType = require "circuit.components.CircuitComponentType"
+local Circuit      = require "circuit.Circuit"
 
 ---@param frontend MiliastraFrontend
 function Game:init(frontend)
@@ -22,43 +20,39 @@ function Game:init(frontend)
 
     self.editor = nil
     self.palette = nil
-    self.hud = nil
 end
 
 ---@param level Puzzle
 function Game:loadLevel(level)
     self.currentLevel = level
 
-    self.circuit = nil
+    self.circuit = Circuit.new()
+    for _, name in ipairs(level.inputs) do
+        self.circuit:addInputNode(name)
+    end
+
+    for _, name in ipairs(level.outputs) do
+        self.circuit:addOutputNode(name)
+    end
 
     self.editor =
         CircuitEditor.new(
             self.circuit,
             self.frontend
         )
-
-    local temp = CircuitBuilder:fromLevel(level)
-    for index, value in ipairs(temp.inputNodes) do
-        ---@cast value InputNode
-        self.editor:createNode(value.type, -400, -200 + (150 * index), value.name)
+    for index, name in ipairs(level.inputs) do
+        self.editor:createNode("INPUT", -400, -200 + (150 * index), name)
     end
-    for index, value in ipairs(temp.outputNodes) do
-        ---@cast value OutputNode
-        self.editor:createNode(value.type, 400, -200 + (150 * index), value.name)
+    for index, name in ipairs(level.outputs) do
+        self.editor:createNode("OUTPUT", -400, -200 + (150 * index), name)
     end
-
-    self.hud =
-        HUDView.new(self.frontend)
 
     self.palette = ComponentPalette.new(self.editor, self.frontend)
+    self.palette:refreshComponents(level.allowedComponents)
 
-    for index, value in ipairs(level.allowedComponents) do
-        self.palette:addComponentType(value)
-    end
-
-    self.hud:setLevelName(level.name)
-    self.hud:setInfo(level.info)
-    self.hud:setSpecs(level.specs)
+    self.frontend:setText("level_name", level.name)
+    self.frontend:setText("level_info", level.info)
+    self.frontend:setText("level_specs", level.specs)
 end
 
 function Game:testCircuit()
@@ -67,11 +61,7 @@ function Game:testCircuit()
             self.circuit
         )
 
-    if result.success then
-        self.hud:showSuccess()
-    else
-        self.hud:showFailure(result)
-    end
+    -- TODO: show success?
 
     return result
 end
