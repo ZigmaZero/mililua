@@ -40,16 +40,16 @@ function Game:loadLevel(level)
             self.frontend
         )
     for index, name in ipairs(level.inputs) do
-        self.editor:createNode("INPUT", -400, -200 + (150 * index), name)
+        self.editor:createNode("INPUT", 0, 0, name)
     end
     for index, name in ipairs(level.outputs) do
-        self.editor:createNode("OUTPUT", -400, -200 + (150 * index), name)
+        self.editor:createNode("OUTPUT", 0, 0, name)
     end
 
     print("Refreshing components with " .. #level.allowedComponents .. " entries")
     self.palette = level.allowedComponents
     print(#self.palette)
-    local paletteReferenceSequence = self.frontend:createPalette(self.palette, function (index)
+    self.frontend:createPalette(self.palette, function (index)
         self.editor:createComponent(self.palette[index], 0, 0)
     end)
 

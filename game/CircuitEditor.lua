@@ -34,6 +34,58 @@ function CircuitEditor:createComponent(
 
     component:setReference(reference)
 
+    if reference then
+        reference:GetChild("CursorEventArea"):AddCursorEventListener(Enum.CursorEventType.CursorBeginDrag,
+            function(eventData)
+                local dx, dy = eventData:GetUIPosDelta()
+                local cx, cy = component:getPosition()
+                component:setPosition(cx + dx, cy + dy)
+                self.frontend:setPosition(reference, cx + dx, cy + dy)
+                self.frontend:setDragging(reference, true)
+                reference:GetChild("CursorEventArea"):AddCursorEventListener(Enum.CursorEventType.CursorDrag,
+                    function(eventData)
+                        local dx, dy = eventData:GetUIPosDelta()
+                        local cx, cy = component:getPosition()
+                        component:setPosition(cx + dx, cy + dy)
+                        self.frontend:setPosition(reference, cx + dx, cy + dy)
+                    end)
+                reference:GetChild("CursorEventArea"):AddCursorEventListener(Enum.CursorEventType.CursorEndDrag,
+                    function(eventData)
+                        local finalX, finalY =
+                            self.frontend:getDropPosition(
+                                reference,
+                                x,
+                                y
+                            )
+
+                        component:setPosition(
+                            finalX,
+                            finalY
+                        )
+
+                        self.frontend:setPosition(
+                            reference,
+                            finalX,
+                            finalY
+                        )
+
+                        self.frontend:setDragging(
+                            reference,
+                            false
+                        )
+                    end)
+            end)
+        reference:GetChild("CursorEventArea"):AddKeyEventListener(Enum.KeyEventType.KeyboardSprintKeyDown,
+            function()
+                reference:GetChild("CursorEventArea"):AddKeyEventListener(Enum.KeyEventType.KeyboardSprintKeyUp,
+                    function()
+                        self:removeComponent(component)
+                        return true
+                    end)
+                return true
+            end)
+    end
+
     self.componentViews[component.id] = component
 
     return component
@@ -42,11 +94,21 @@ end
 function CircuitEditor:removeComponent(component)
     self.componentViews[component.id] = nil
     self.circuit:removeComponent(component)
+    local control = game.GetClientUIControl(component.referenceId)
+    if not control then
+        return
+    end
+    game.DestroyClientUIControl(control)
 end
 
 function CircuitEditor:removeWire(wire)
     self.wireViews[wire.id] = nil
     self.circuit:disconnect(wire)
+    local control = game.GetClientUIControl(wire.referenceId)
+    if not control then
+        return
+    end
+    game.DestroyClientUIControl(control)
 end
 
 function CircuitEditor:createNode(componentType, x, y, name)
@@ -68,6 +130,49 @@ function CircuitEditor:createNode(componentType, x, y, name)
 
     component:setReference(reference)
 
+    if reference then
+        reference:GetChild("CursorEventArea"):AddCursorEventListener(Enum.CursorEventType.CursorBeginDrag,
+            function(eventData)
+                local dx, dy = eventData:GetUIPosDelta()
+                local cx, cy = component:getPosition()
+                component:setPosition(cx + dx, cy + dy)
+                self.frontend:setPosition(reference, cx + dx, cy + dy)
+                self.frontend:setDragging(reference, true)
+                reference:GetChild("CursorEventArea"):AddCursorEventListener(Enum.CursorEventType.CursorDrag,
+                    function(eventData)
+                        local dx, dy = eventData:GetUIPosDelta()
+                        local cx, cy = component:getPosition()
+                        component:setPosition(cx + dx, cy + dy)
+                        self.frontend:setPosition(reference, cx + dx, cy + dy)
+                    end)
+                reference:GetChild("CursorEventArea"):AddCursorEventListener(Enum.CursorEventType.CursorEndDrag,
+                    function(eventData)
+                        local finalX, finalY =
+                            self.frontend:getDropPosition(
+                                reference,
+                                x,
+                                y
+                            )
+
+                        component:setPosition(
+                            finalX,
+                            finalY
+                        )
+
+                        self.frontend:setPosition(
+                            reference,
+                            finalX,
+                            finalY
+                        )
+
+                        self.frontend:setDragging(
+                            reference,
+                            false
+                        )
+                    end)
+            end)
+    end
+
     self.componentViews[component.id] = component
 
     return component
@@ -80,9 +185,9 @@ function CircuitEditor:connectPorts(
     destination
 )
     if not self:isOppositePortPair(
-        source,
-        destination
-    ) then
+            source,
+            destination
+        ) then
         return nil
     end
 
@@ -112,6 +217,18 @@ function CircuitEditor:connectPorts(
         )
 
     wire:setReference(reference)
+
+    if reference then
+        reference:GetChild("CursorEventArea"):AddKeyEventListener(Enum.KeyEventType.KeyboardSprintKeyDown,
+            function()
+                reference:GetChild("CursorEventArea"):AddKeyEventListener(Enum.KeyEventType.KeyboardSprintKeyUp,
+                    function()
+                        self:removeWire(wire)
+                        return true
+                    end)
+                return true
+            end)
+    end
 
     self.wireViews[wire.id] = wire
     return wire

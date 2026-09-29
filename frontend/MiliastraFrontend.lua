@@ -59,7 +59,6 @@ function MiliastraFrontend:createComponentVisual(component, x, y)
         return
     end
     local reference = game.InstantiateClientUIControl(1073742269, mask)
-    -- Select the visual based on component:getType().
     ---@cast reference ClientUIContainerControl
     reference:GetChild("TextBoxControl").text = component:getType()
     local inputs = #component.inputs
@@ -325,7 +324,7 @@ function MiliastraFrontend:setDragging(
     if dragging then
         object:SetAsLastSibling()
     else
-        object:SetAsFirstSibling()
+        -- nothing
     end
 end
 
