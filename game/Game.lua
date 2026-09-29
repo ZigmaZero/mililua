@@ -1,4 +1,4 @@
-local class = "core.class"
+local class = require "core.class"
 
 ---@class Game
 ---@field new fun(frontend: MiliastraFrontend): Game
@@ -74,6 +74,7 @@ function Game:exitLevel()
     self.palette = nil
 
     -- screw it just clear the entire frontend
+    self.frontend:cleanupCircuitPage()
 end
 
 return Game

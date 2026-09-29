@@ -1,31 +1,33 @@
 local Global = require("miliastra.Global Script")
 
 local page = nil
-local root = script.object
-
-assert(type(root) ~= "nil")
-
 local M = {}
+M.thisScriptObject = nil
 M.canSettle = false
 
 ---@param newPage "CircuitPage" | "LevelPage" | "TitlePage"
 function M.switchPage(newPage)
+    assert(M.thisScriptObject ~= nil)
     if page then
-        root:GetChild(page):SetActive(false)
+        M.thisScriptObject:GetChild(page):SetActive(false)
     end
     page = newPage
-    root:GetChild(page):SetActive(true)
+    local pageRef = M.thisScriptObject:GetChild(newPage)
+    assert(pageRef ~= nil, newPage .. " is not in UI root")
+    pageRef:SetActive(true)
 end
 
 function M.setPopup(enable, text)
-    root:GetChild("Popup"):SetActive(enable)
-    root:FindChild("Popup/PopupBounds/PopupText").text = text
+    M.thisScriptObject:GetChild("Popup"):SetActive(enable)
+    M.thisScriptObject:FindChild("Popup/PopupBounds/PopupText").text = text
 end
 
 function OnInit()
-    Global.initGame(root)
+    M.thisScriptObject = script.object
+    assert(M.thisScriptObject ~= nil)
+    Global.initGame(M.thisScriptObject)
     M.switchPage("TitlePage")
-    game.Tween(root, {}, 120):SetOnComplete(function ()
+    game.Tween(M.thisScriptObject, {}, 120):SetOnComplete(function ()
         M.canSettle = true
     end):Play()
 end

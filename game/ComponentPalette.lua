@@ -1,5 +1,5 @@
 local PaletteView = require "frontend.PaletteView"
-local class = "core.class"
+local class = require "core.class"
 local ComponentPalette = class()
 
 ---@param editor CircuitEditor

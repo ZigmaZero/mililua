@@ -1,6 +1,6 @@
 local CircuitComponentType = require "circuit.components.CircuitComponentType"
 local ControlDimensionsUtils = require "utils.ControlDimensionsUtils"
-local class = "core.class"
+local class = require "core.class"
 
 ---@class MiliastraFrontend
 ---@field new fun(uiRoot): MiliastraFrontend

@@ -25,23 +25,23 @@ local Level = Puzzle.new({
 
     tests = {
         input = {
-            [4] = {
+            [100] = {
                 A = true
             },
-            [24] = {
+            [300] = {
                 B = true
             }
         },
         output = {
-            [20] = {
+            [200] = {
                 O = false
             },
-            [40] = {
+            [400] = {
                 O = true
             }
         }
     },
 
-    simulationLimit = 100
+    simulationLimit = 500
 })
 return Level
