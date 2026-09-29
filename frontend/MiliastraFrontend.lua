@@ -61,32 +61,7 @@ function MiliastraFrontend:createComponentVisual(component, x, y)
     local reference = game.InstantiateClientUIControl(1073742269, mask)
     ---@cast reference ClientUIContainerControl
     reference:GetChild("TextBoxControl").text = component:getType()
-    local inputs = #component.inputs
-    reference:GetChild("InputPins"):RefreshItems(inputs, function(control, index)
-        control:GetChild("CursorEventArea"):AddCursorEventListener(Enum.CursorEventType.CursorEnter, function(eventData)
-            self.hoveringPort = {
-                id = reference.id,
-                inOut = "in",
-                port = index + 1
-            }
-        end)
-        control:GetChild("CursorEventArea"):AddCursorEventListener(Enum.CursorEventType.CursorExit, function(eventData)
-            self.hoveringPort = nil
-        end)
-    end)
-    local outputs = #component.outputs
-    reference:GetChild("OutputPins"):RefreshItems(outputs, function(control, index)
-        control:GetChild("CursorEventArea"):AddCursorEventListener(Enum.CursorEventType.CursorEnter, function(eventData)
-            self.hoveringPort = {
-                id = reference.id,
-                inOut = "out",
-                port = index + 1
-            }
-        end)
-        control:GetChild("CursorEventArea"):AddCursorEventListener(Enum.CursorEventType.CursorExit, function(eventData)
-            self.hoveringPort = nil
-        end)
-    end)
+
     -- Set object x, y
     reference:SetAnchoredPosition(x, y)
 
@@ -187,6 +162,45 @@ function MiliastraFrontend:createTemporaryWireVisual(
     visual:SetLocalRotation(0, 0, wireRotation)
 
     return visual
+end
+
+function MiliastraFrontend:updateTemporaryWireVisual(
+    sourceRef,
+    portIdx,
+    x,
+    y,
+    visual
+)
+    local uiRoot = game.GetClientUIControl(self.uiRootId)
+    assert(uiRoot ~= nil)
+    local mask = uiRoot:FindChild("CircuitPage/CircuitArea/Mask")
+    if not mask then
+        return
+    end
+
+    local sourceCtrl = self:getOutputPortReference(sourceRef, portIdx)
+    if not sourceCtrl then
+        return
+    end
+
+    local sourceX, sourceY = sourceCtrl:GetAnchoredPosition()
+    local maskMidX = (ControlDimensionsUtils.getUnscaledMaxWidth(mask) + ControlDimensionsUtils.getUnscaledMinWidth(mask))/2
+    local maskMidY = (ControlDimensionsUtils.getUnscaledMaxHeight(mask) + ControlDimensionsUtils.getUnscaledMinHeight(mask))/2
+    local destX = x - maskMidX
+    local destY = y - maskMidY
+
+    local deltaX = destX - sourceX
+    local deltaY = destY - sourceY
+    local wireX = (sourceX + destX) / 2
+    local wireY = (sourceY + destY) / 2
+    local wireSizeDelta = math.sqrt(deltaX * deltaX + deltaY * deltaY)
+    local wireRotation = math.deg(math.atan(deltaY, deltaX))
+
+    visual.sizeDeltaX = wireSizeDelta
+
+    -- Set object x, y
+    visual:SetAnchoredPosition(wireX, wireY)
+    visual:SetLocalRotation(0, 0, wireRotation)
 end
 
 -- Port references
