@@ -1,4 +1,5 @@
 local class = require "core.class"
+local Levels = require "puzzle.Levels"
 
 ---@class LevelManager
 ---@field new fun() : LevelManager
@@ -9,6 +10,9 @@ function LevelManager:init()
     self.id_to_index = {}
     self.levels = {}
     self.currentLevel = nil
+    for index, value in ipairs(Levels) do
+        self:addLevel(value)
+    end
 end
 
 function LevelManager:addLevel(level)

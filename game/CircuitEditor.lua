@@ -2,7 +2,7 @@ local class = require "core.class"
 local ComponentView = require "frontend.ComponentView"
 local WireView      = require "frontend.WireView"
 ---@class CircuitEditor
----@field new fun(circuit: Circuit, frontend: MiliastraFrontend): Game
+---@field new fun(circuit: Circuit, frontend: MiliastraFrontend): CircuitEditor
 local CircuitEditor = class()
 
 ---@param circuit Circuit
@@ -11,6 +11,8 @@ function CircuitEditor:init(circuit, frontend)
     self.frontend = frontend
 
     self.componentViews = {}
+    self.inputPortViews = {}
+    self.outputPortViews = {}
     self.wireViews = {}
 
     self.temporaryWireViews = {}
@@ -28,7 +30,9 @@ function CircuitEditor:createComponent(
 
     local reference =
         self.frontend:createComponentVisual(
-            component
+            component,
+            x,
+            y
         )
 
     local view =
@@ -54,6 +58,36 @@ function CircuitEditor:removeComponent(component)
     end
 
     self.circuit:removeComponent(component)
+end
+
+function CircuitEditor:createNode(componentType, x, y, name)
+    local ref = nil
+    if componentType == "INPUT" then
+        ref = self.circuit:addInputNode(name)
+    else
+        ref = self.circuit:addOutputNode(name)
+    end
+
+    ref:setPosition(x, y)
+
+    local reference =
+        self.frontend:createComponentVisual(
+            ref,
+            x,
+            y
+        )
+
+    local view =
+        ComponentView:new(
+            ref,
+            self.frontend,
+            reference,
+            self
+        )
+
+    self.componentViews[ref.id] = view
+
+    return view
 end
 
 function CircuitEditor:connectPorts(

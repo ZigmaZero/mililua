@@ -8,6 +8,7 @@ local CircuitBuilder = require "game.CircuitBuilder"
 local ComponentPalette = require "game.ComponentPalette"
 local HUDView = require "frontend.HUDView"
 local LevelManager = require "puzzle.LevelManager"
+local CircuitComponentType = require "circuit.components.CircuitComponentType"
 
 function Game:init(frontend)
     self.frontend = frontend
@@ -27,8 +28,7 @@ end
 function Game:loadLevel(level)
     self.currentLevel = level
 
-    self.circuit =
-        CircuitBuilder:fromLevel(level)
+    self.circuit = nil
 
     self.editor =
         CircuitEditor.new(
@@ -36,10 +36,24 @@ function Game:loadLevel(level)
             self.frontend
         )
 
+    local temp = CircuitBuilder:fromLevel(level)
+    for index, value in ipairs(temp.inputNodes) do
+        ---@cast value InputNode
+        self.editor:createNode(value.type, -400, -200 + (150 * index), value.name)
+    end
+    for index, value in ipairs(temp.outputNodes) do
+        ---@cast value OutputNode
+        self.editor:createNode(value.type, 400, -200 + (150 * index), value.name)
+    end
+
     self.hud =
         HUDView.new(self.frontend)
 
     self.palette = ComponentPalette.new(self.editor, self.frontend)
+
+    for index, value in ipairs(level.allowedComponents) do
+        self.palette:addComponentType(value)
+    end
 
     self.hud:setLevelName(level.name)
     self.hud:setInfo(level.info)

@@ -8,13 +8,9 @@ function ComponentPalette:init(editor, frontend)
     self.entries = {}
 end
 
-function ComponentPalette:addComponentType(name)
-    local entry =
-        self.frontend:createPaletteEntry(name, function()
-        self.editor:spawnComponent(name)
-    end)
-
-    table.insert(self.entries, entry)
+function ComponentPalette:refreshComponents(level)
+    self.entries = level.allowedComponents
+    self.frontend:createPalette(self.entries)
 end
 
 return ComponentPalette

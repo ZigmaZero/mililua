@@ -45,19 +45,62 @@ function MiliastraFrontend:registerTextListener(textKey, reference)
 end
 
 -- Object Creation
-
-function MiliastraFrontend:createComponentVisual(component)
+---@param component CircuitComponent
+---@param x number
+---@param y number
+---@return ClientUIContainerControl?
+function MiliastraFrontend:createComponentVisual(component, x, y)
     -- TODO:
     -- Create the MiliLua UI object representing this component.
+    local mask = self.uiRoot:FindChild("CircuitPage/CircuitArea/Mask")
+    if not mask then
+        return
+    end
+    local reference = game.InstantiateClientUIControl(1073742269, mask)
     -- Select the visual based on component:getType().
-    -- Parent it to the appropriate UI root/container.
+    ---@cast reference ClientUIContainerControl
+    reference:GetChild("TextBoxControl").text = component:getType()
+    local inputs = #component.inputs
+    reference:GetChild("InputPins"):RefreshItems(inputs, function(control, index)
+        control:AddCursorEventListener(Enum.CursorEventType.CursorEnter, function(eventData)
+            self.hoveringPort = {
+                id = reference.id,
+                inOut = "in",
+                port = index + 1
+            }
+        end)
+        control:AddCursorEventListener(Enum.CursorEventType.CursorExit, function(eventData)
+            self.hoveringPort = nil
+        end)
+    end)
+    local outputs = #component.outputs
+    reference:GetChild("OutputPins"):RefreshItems(outputs, function(control, index)
+        control:AddCursorEventListener(Enum.CursorEventType.CursorEnter, function(eventData)
+            self.hoveringPort = {
+                id = reference.id,
+                inOut = "out",
+                port = index + 1
+            }
+        end)
+        control:AddCursorEventListener(Enum.CursorEventType.CursorExit, function(eventData)
+            self.hoveringPort = nil
+        end)
+    end)
+    -- Set object x, y
+    local maskMidX = (ControlDimensionsUtils.getUnscaledMaxWidth(mask) + ControlDimensionsUtils.getUnscaledMinWidth(mask))/2
+    local maskMidY = (ControlDimensionsUtils.getUnscaledMaxHeight(mask) + ControlDimensionsUtils.getUnscaledMinHeight(mask))/2
+    reference:SetAnchoredPosition(x - maskMidX, y - maskMidY)
+
     -- Return the created MiliLua object.
+    return reference
 end
 
+---@param wire Wire
 function MiliastraFrontend:createWireVisual(wire)
+    local sourceX = wire.source.owner.x
     -- TODO:
     -- Create the MiliLua object(s) used to render a permanent wire.
-    -- Return the reference object.
+    -- Return the reference object
 end
 
 function MiliastraFrontend:createTemporaryWireVisual(
@@ -70,23 +113,43 @@ function MiliastraFrontend:createTemporaryWireVisual(
     -- Return the reference object.
 end
 
--- Port references 
+-- Port references
+---@param componentReference ClientUIContainerControl
+---@param index number
 function MiliastraFrontend:getInputPortReference(
     componentReference,
     index
 )
-    -- TODO:
-    -- Return the MiliLua object representing
-    -- the specified input socket.
+    local grid = componentReference:GetChild("InputPins")
+    if grid == nil then
+        printerr("Cant find anything")
+        return nil
+    end
+    for i, value in ipairs(grid:GetChildren()) do
+        if grid:GetItemIndex(value) == index - 1 then
+            return value
+        end
+    end
+    printerr("Cant find anything")
+    return nil
 end
 
 function MiliastraFrontend:getOutputPortReference(
     componentReference,
     index
 )
-    -- TODO:
-    -- Return the MiliLua object representing
-    -- the specified output socket.
+    local grid = componentReference:GetChild("OutputPins")
+    if grid == nil then
+        printerr("Cant find anything")
+        return nil
+    end
+    for i, value in ipairs(grid:GetChildren()) do
+        if grid:GetItemIndex(value) == index - 1 then
+            return value
+        end
+    end
+    printerr("Cant find anything")
+    return nil
 end
 
 ---@param object ClientControlType
@@ -95,7 +158,7 @@ function MiliastraFrontend:onClick(
     object,
     callback
 )
-    object:AddCursorEventListener(Enum.CursorEventType.CursorClick, function (eventData)
+    object:AddCursorEventListener(Enum.CursorEventType.CursorClick, function(eventData)
         local x, y = eventData:GetPressUIPos()
         callback(x, y)
     end)
@@ -107,7 +170,7 @@ function MiliastraFrontend:onDragStart(
     object,
     callback
 )
-    object:AddCursorEventListener(Enum.CursorEventType.CursorBeginDrag, function (eventData)
+    object:AddCursorEventListener(Enum.CursorEventType.CursorBeginDrag, function(eventData)
         local x, y = eventData:GetUIPos()
         callback(x, y)
     end)
@@ -119,7 +182,7 @@ function MiliastraFrontend:onDrag(
     object,
     callback
 )
-    object:AddCursorEventListener(Enum.CursorEventType.CursorDrag, function (eventData)
+    object:AddCursorEventListener(Enum.CursorEventType.CursorDrag, function(eventData)
         local x, y = eventData:GetUIPos()
         if eventData.dragging then
             callback(x, y)
@@ -133,7 +196,7 @@ function MiliastraFrontend:onDragEnd(
     object,
     callback
 )
-    object:AddCursorEventListener(Enum.CursorEventType.CursorEndDrag, function (eventData)
+    object:AddCursorEventListener(Enum.CursorEventType.CursorEndDrag, function(eventData)
         local x, y = eventData:GetUIPos()
         callback(x, y)
     end)
@@ -145,8 +208,8 @@ function MiliastraFrontend:onRMB(
     object,
     callback
 )
-    object:AddKeyEventListener(Enum.KeyEventType.KeyboardSprintKeyDown, function ()
-        object:AddKeyEventListener(Enum.KeyEventType.KeyboardSprintKeyUp, function ()
+    object:AddKeyEventListener(Enum.KeyEventType.KeyboardSprintKeyDown, function()
+        object:AddKeyEventListener(Enum.KeyEventType.KeyboardSprintKeyUp, function()
             local x, y = game.GetCursorUIPos()
             callback(x, y)
             return true
@@ -220,6 +283,45 @@ function MiliastraFrontend:getHoveredPort(
     y
 )
     return self.hoveringPort
+end
+
+-- Palette Entry
+
+function MiliastraFrontend:createPalette(entries)
+    local grid = self.uiRoot:FindChild("CircuitPage/PaletteArea/GridScrollerControl")
+    if not grid then
+        return
+    end
+
+    local ComponentTypeToInOutCount = {
+        AND = {2, 1},
+        OR = {2, 1},
+        NOT = {1, 1},
+        XOR = {2, 1},
+        NAND = {2, 1},
+        NOR = {2, 1},
+        XNOR = {2, 1},
+        REGISTER = {2, 1},
+        INPUT = {0, 1},
+        OUTPUT = {1, 0},
+        DELAY = {1, 1},
+    }
+
+    ---@cast grid ClientUIGridScrollerControl
+    grid:RefreshItems(#entries, function(control, index)
+        local container = control:GetChild("ContainerControl")
+        if not container then
+            return
+        end
+        local reference = game.InstantiateClientUIControl(1073742269, container)
+        reference:GetChild("TextBoxControl").text = entries[index + 1]
+        local inputs = ComponentTypeToInOutCount[entries[index + 1]][1]
+        reference:GetChild("InputPins"):RefreshItems(inputs, function(control, index)
+        end)
+        local outputs = ComponentTypeToInOutCount[entries[index + 1]][2]
+        reference:GetChild("OutputPins"):RefreshItems(outputs, function(control, index)
+        end)
+    end)
 end
 
 return MiliastraFrontend
