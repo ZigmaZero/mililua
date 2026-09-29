@@ -3,10 +3,6 @@
 ---The base type that represents the common fields and functions of all Client Controls. Contains functions for changing fields, setting state, and managing event listeners.
 ---
 ---Client Controls are destroyed and recreated whenever the client enters a loading screen, such as when teleporting or reconnecting.
----
----Pending Documentation:
----- Behavior of anchoredPositionX when anchorMinX is not equal to anchorMaxX
----- Behavior of anchoredPositionY when anchorMinY is not equal to anchorMaxY
 ---@class ClientUIBaseControl
 ---@field alive boolean # [Read] Whether the Client Control is instantiated.
 ---@field id number # [Read] The runtime ID of the Client Control.
@@ -16,8 +12,8 @@
 ---@field visible boolean # [Read] Whether the Client Control is visible.
 ---@field name string # [Read/Write] The name of the Client Control.
 ---@field parent ClientControlType? # [Read/Write] The parent of the Client Control. Always nil for root-level ControlContainers.
----@field anchoredPositionX number # [Read/Write/Tweenable] **(Pending Verification)** The x position of the Client Control's pivot point relative to its anchor point.
----@field anchoredPositionY number # [Read/Write/Tweenable] **(Pending Verification)** The y position of the Client Control's pivot point relative to its anchor point.
+---@field anchoredPositionX number # [Read/Write/Tweenable] The x position of the Client Control's pivot point relative to its anchor point. See [ClientUIBaseControl.GetAnchoredPosition](https://haminpants.github.io/miliastra-lua-api/class/ClientUIBaseControl.html#ClientUIBaseControl.GetAnchoredPosition) for detailed behavior.
+---@field anchoredPositionY number # [Read/Write/Tweenable] The y position of the Client Control's pivot point relative to its anchor point. See [ClientUIBaseControl.GetAnchoredPosition](https://haminpants.github.io/miliastra-lua-api/class/ClientUIBaseControl.html#ClientUIBaseControl.GetAnchoredPosition) for detailed behavior.
 ---@field sizeDeltaX number # [Read/Write/Tweenable] The size offset between the width of the Client Control and its x-axis anchor bounds.
 ---@field sizeDeltaY number # [Read/Write/Tweenable] The size offset between the height of the Client Control and its y-axis anchor bounds.
 ---@field anchorMinX NormalizedPercentage # [Read/Write/Tweenable] The minimum x anchor represented as a normalized percentage of the parent's width originating from the bottom-left corner of the parent's bounding box.
@@ -36,22 +32,25 @@
 local ClientUIBaseControl = {}
 
 ---Registers a key event listener to the Client Control.
+---- The callback function must return a boolean which determines whether to mark the event as complete. If marked as complete, subsequent key event listeners of the same event type will be called, even if on a different root-level ContainerControl.
 ---
----The callback function must return a boolean which determines whether to mark the event as complete. If marked as complete, subsequent key event listeners of the same event type will be called, even if on a different root-level ContainerControl.
+---**See:**
+---- [Enum.KeyEventType](https://haminpants.github.io/miliastra-lua-api/class/Enum.KeyEventType.html) for all key event types.
 ---@param eventType EnumItem.KeyEventType # The key event type to listen for.
 ---@param callback fun(): boolean # The callback function, returning a boolean representing whether to mark the event as completed.
----@see Enum.KeyEventType
 function ClientUIBaseControl:AddKeyEventListener(eventType, callback) end
 
 ---Registers a controller navigation event listener.
+---
+---**See:**
+---- [Enum.ControllerNavigationEventType](https://haminpants.github.io/miliastra-lua-api/class/Enum.ControllerNavigationEventType.html) for all controller navigation event types.
 ---@param eventType EnumItem.ControllerNavigationEventType # The controller navigation type to listen for.
 ---@param callback fun() # The function to call when the event is triggered.
----@see Enum.ControllerNavigationEventType
 function ClientUIBaseControl:AddNavigationEventListener(eventType, callback) end
 
----Gets a child by path. If multiple children with the same path exist, the first by descending sibling index order is returned.
----
----Returns nil if there are no children with the specified path.
+---Gets a child by relative hierarchy path.
+---- If multiple children with the same path exist, the first by descending sibling index order is returned.
+---- Returns nil if there are no children with the specified path.
 ---
 ---Consider the following hierarchy:
 ---```
@@ -66,11 +65,13 @@ function ClientUIBaseControl:AddNavigationEventListener(eventType, callback) end
 function ClientUIBaseControl:FindChild(path) end
 
 ---Returns the navigation mode and target for the specified direction.
+---
+---**See:**
+---- [Enum.ControllerNavigationDir](https://haminpants.github.io/miliastra-lua-api/class/Enum.ControllerNavigationDir.html) for all controller navigation directions.
+---- [Enum.ControllerNavigationMode](https://haminpants.github.io/miliastra-lua-api/class/Enum.ControllerNavigationMode.html) for all controller navigation modes.
 ---@param navigationDir EnumItem.ControllerNavigationDir # The direction to get navigation settings for.
 ---@return EnumItem.ControllerNavigationMode navigationMode # The navigation mode for the specified direction.
 ---@return ClientControlType? navigationTarget # The target Client Control. Only set for the Specified navigation mode.
----@see Enum.ControllerNavigationDir
----@see Enum.ControllerNavigationMode
 function ClientUIBaseControl:GetControllerNavigation(navigationDir) end
 
 ---Returns the maximum anchors as a normalized percentage of the parent's size, originating from the bottom-left corner of the parent's bounding box.
@@ -84,18 +85,15 @@ function ClientUIBaseControl:GetAnchorMax() end
 function ClientUIBaseControl:GetAnchorMin() end
 
 ---Returns the position of the pivot point relative to the anchor point.
----
----If anchorMin equals to anchorMax on a given axis, the anchor point for that axis resolves to anchorMin.
----
----Pending Documentation:
----- Behavior when anchorMin is not equal to anchorMax on a given axis.
+---- If anchorMin equals to anchorMax on a given axis, the anchor point for that axis resolves to anchorMin.
+---- If anchorMin does not equal to anchorMax on a given axis, the anchor point is interpolated between the minimum and maximum anchors based on the control's pivot percentage for that axis.
 ---@return number x # The x-axis distance of the pivot point relative to the anchor point.
 ---@return number y # The y-axis distance of the pivot point relative to the anchor point.
 function ClientUIBaseControl:GetAnchoredPosition() end
 
----Gets a child by name. If multiple children with the same name exist, the first by descending sibling index order is returned.
----
----Returns nil if there are no children with the specified name.
+---Gets a child by name.
+---- If multiple children with the same name exist, the first by descending sibling index order is returned.
+---- Returns nil if there are no children with the specified name.
 ---@param name string # The name used to retrieve a child.
 ---@return ClientControlType? child # The first child with the specified name.
 function ClientUIBaseControl:GetChild(name) end
@@ -122,15 +120,13 @@ function ClientUIBaseControl:GetLocalScale() end
 function ClientUIBaseControl:GetPivot() end
 
 ---Gets the instance of a script attached to the Client Control by Script Mapping ID.
----
----Returns nil if the script with the specified Script Mapping ID is not attached to the Client Control.
+---- Returns nil if the script with the specified Script Mapping ID is not attached to the Client Control.
 ---@param scriptPrefabIndex number # The Script Mapping ID used to retrieve a script instance.
 ---@return Script? script # The script instance with the specified Script Mapping ID.
 function ClientUIBaseControl:GetScript(scriptPrefabIndex) end
 
 ---Gets the instance of a script attached to the Client Control by file path, relative to the `external_lua_file` folder.
----
----Returns nil if the script with the specified file path is not attached to the Client Control.
+---- Returns nil if the script with the specified file path is not attached to the Client Control.
 ---@param path string # The file path of the script, excluding the file extension.
 ---@return Script? script # The script instance with the specified path.
 function ClientUIBaseControl:GetScriptByPath(path) end
@@ -140,15 +136,14 @@ function ClientUIBaseControl:GetScriptByPath(path) end
 function ClientUIBaseControl:GetScripts() end
 
 ---Returns the 0-indexed position of the Client Control in the parent's list of children.
----
----Returns -1 for root-level ContainerControls.
+---- Higher-index siblings are rendered on top of lower-index siblings.
+---- Children are listed in descending sibling order in the editor.
+---- Returns -1 for root-level ContainerControls.
 ---@return number index # The 0-indexed position of the Client Control in the parent's list of children.
----@see ClientUIBaseControl.SetSiblingIndex for sibling-index behavior.
 function ClientUIBaseControl:GetSiblingIndex() end
 
 ---Returns the difference in size between the Client Control and the distance between its minimum and maximum anchors.
----
----If anchorMin equals to anchorMax on a given axis, the delta for that axis represents the Client Control's size along that axis.
+---- If anchorMin equals to anchorMax on a given axis, the delta for that axis represents the Client Control's size along that axis.
 ---@return number deltaX # The size offset between the width of the Client Control and its x-axis anchor bounds.
 ---@return number deltaY # The size offset between the height of the Control and its y-axis anchor bounds.
 function ClientUIBaseControl:GetSizeDelta() end
@@ -160,30 +155,37 @@ function ClientUIBaseControl:RemoveAllKeyEventListeners() end
 function ClientUIBaseControl:RemoveAllNavigationEventListeners() end
 
 ---Removes the specified key event listener from the Client Control.
+---
+---**See:**
+---- [Enum.KeyEventType](https://haminpants.github.io/miliastra-lua-api/class/Enum.KeyEventType.html) for all key event types.
 ---@param eventType EnumItem.KeyEventType # The event type to remove the callback from.
 ---@param callback fun(): boolean # The callback function to remove.
----@see Enum.KeyEventType
 function ClientUIBaseControl:RemoveKeyEventListener(eventType, callback) end
 
 ---Removes all key event listeners for the specified event type from the Client Control.
+---
+---**See:**
+---- [Enum.KeyEventType](https://haminpants.github.io/miliastra-lua-api/class/Enum.KeyEventType.html) for all key event types.
 ---@param eventType EnumItem.KeyEventType # The event type to clear listeners from.
----@see Enum.KeyEventType
 function ClientUIBaseControl:RemoveKeyEventListeners(eventType) end
 
 ---Removes the specified controller navigation event listener from the Client Control.
+---
+---**See:**
+---- [Enum.ControllerNavigationEventType](https://haminpants.github.io/miliastra-lua-api/class/Enum.ControllerNavigationEventType.html) for all controller navigation event types.
 ---@param eventType EnumItem.ControllerNavigationEventType # The event type to remove the callback from.
 ---@param callback fun() # The callback function to remove.
----@see Enum.ControllerNavigationEventType
 function ClientUIBaseControl:RemoveNavigationEventListener(eventType, callback) end
 
 ---Removes all listeners for the specified event type from the Client Control.
+---
+---**See:**
+---- [Enum.ControllerNavigationEventType](https://haminpants.github.io/miliastra-lua-api/class/Enum.ControllerNavigationEventType.html) for all controller navigation event types.
 ---@param eventType EnumItem.ControllerNavigationEventType # The event type to clear listeners from.
----@see Enum.ControllerNavigationEventType
 function ClientUIBaseControl:RemoveNavigationEventListeners(eventType) end
 
 ---Sets the active status of the Client Control.
----
----If the active status is changed, the corresponding lifecycle functions are called (OnEnable when true and OnDisable when false).
+---- If the active status is changed, the corresponding lifecycle functions are called (OnEnable when true and OnDisable when false).
 ---@param active boolean # Whether to set as active.
 function ClientUIBaseControl:SetActive(active) end
 
@@ -198,39 +200,41 @@ function ClientUIBaseControl:SetAnchorMax(x, y) end
 function ClientUIBaseControl:SetAnchorMin(x, y) end
 
 ---Sets the position of the pivot point relative to the anchor point.
+---- If anchorMin equals to anchorMax on a given axis, the anchor point for that axis resolves to anchorMin.
 ---
----If anchorMin equals to anchorMax on a given axis, the anchor point for that axis resolves to anchorMin.
----
----Pending Documentation:
----- Behavior when anchorMin is not equal to anchorMax on a given axis.
+---**See:**
+---- [ClientUIBaseControl.GetAnchoredPosition](https://haminpants.github.io/miliastra-lua-api/class/ClientUIBaseControl.html#ClientUIBaseControl.GetAnchoredPosition) for detailed anchor point behavior.
 ---@param x number # The x position of the pivot point relative to the anchor point.
 ---@param y number # The y position of the pivot point relative to the anchor point.
 function ClientUIBaseControl:SetAnchoredPosition(x, y) end
 
 ---Sets the Client Control as the first child (index 0) of its parent.
+---- Throws an error if called before OnStart or during OnDestroy.
+---- Returns false only when called on a root-level ContainerControl.
 ---
----Pending Documentation:
----- Unknown return value, seems to always return true.
----@return boolean # ?
----@see ClientUIBaseControl.SetSiblingIndex for sibling-index behavior.
+---**See:**
+---- [ClientUIBaseControl.GetSiblingIndex](https://haminpants.github.io/miliastra-lua-api/class/ClientUIBaseControl.html#ClientUIBaseControl.GetSiblingIndex) for detailed sibling-index behavior.
+---@return boolean unknown # Always true?
 function ClientUIBaseControl:SetAsFirstSibling() end
 
 ---Sets the Client Control as the last child (greatest index) of its parent.
+---- Throws an error if called before OnStart or during OnDestroy.
+---- Returns false only when called on a root-level ContainerControl.
 ---
----Pending Documentation:
----- Unknown return value, seems to always return true.
----@return boolean # ?
----@see ClientUIBaseControl.SetSiblingIndex for sibling-index behavior.
+---**See:**
+---- [ClientUIBaseControl.GetSiblingIndex](https://haminpants.github.io/miliastra-lua-api/class/ClientUIBaseControl.html#ClientUIBaseControl.GetSiblingIndex) for detailed sibling-index behavior.
+---@return boolean unknown # Always true?
 function ClientUIBaseControl:SetAsLastSibling() end
 
 ---Sets the controller navigation mode for a specific navigation direction.
+---- If Enum.ControllerNavigationMode.Specified is passed and the navigation target is nil, the navigation mode will be set to None.
 ---
----If Enum.ControllerNavigationMode.Specified is passed and the navigation target is nil, the navigation mode will be set to None.
+---**See:**
+---- [Enum.ControllerNavigationDir](https://haminpants.github.io/miliastra-lua-api/class/Enum.ControllerNavigationDir.html) for all controller navigation directions.
+---- [Enum.ControllerNavigationMode](https://haminpants.github.io/miliastra-lua-api/class/Enum.ControllerNavigationMode.html) for all controller navigation modes.
 ---@param navigationDir EnumItem.ControllerNavigationDir # The navigation direction to apply the navigation mode to.
 ---@param navigationMode EnumItem.ControllerNavigationMode # The navigation mode to use.
 ---@param navigationTarget? ClientControlType # The navigation target. Required if the Specified navigation mode is passed, otherwise this parameter is ignored.
----@see Enum.ControllerNavigationDir
----@see Enum.ControllerNavigationMode
 function ClientUIBaseControl:SetControllerNavigation(navigationDir, navigationMode, navigationTarget) end
 
 ---Sets the local rotation of the Client Control.
@@ -251,18 +255,17 @@ function ClientUIBaseControl:SetLocalScale(x, y, z) end
 function ClientUIBaseControl:SetPivot(x, y) end
 
 ---Sets the 0-indexed position of the Client Control in the parent's list of children.
+---- Throws an error if called before OnStart or during OnDestroy.
+---- Returns false only when called on a root-level ContainerControl.
 ---
----Higher-index siblings are rendered on top of lower-index siblings, meaning children are listed in descending sibling order in the editor.
----
----Pending Documentation:
----- Unknown return value, seems to always return true.
+---**See:**
+---- [ClientUIBaseControl.GetSiblingIndex](https://haminpants.github.io/miliastra-lua-api/class/ClientUIBaseControl.html#ClientUIBaseControl.GetSiblingIndex) for detailed sibling-index behavior.
 ---@param index integer # The 0-indexed position in the parent's list of children. Automatically clamped within the valid range of indexes.
----@return boolean # ?
+---@return boolean success # Whether the sibling index was changed.
 function ClientUIBaseControl:SetSiblingIndex(index) end
 
 ---Sets the size offset between the Client Control and the its anchor bounds.
----
----If anchorMin equals to anchorMax on a given axis, the delta for that axis represents the Client Control's size along that axis.
+---- If anchorMin equals to anchorMax on a given axis, the delta for that axis represents the Client Control's size along that axis.
 ---@param deltaX number # The size offset between the Client Control's width and x-axis anchor bounds.
 ---@param deltaY number # The size offset between the Client Control's height and y-axis anchor bounds.
 function ClientUIBaseControl:SetSizeDelta(deltaX, deltaY) end

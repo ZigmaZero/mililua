@@ -7,24 +7,25 @@ game = {}
 ---@param control ClientControlType # The Client Control to destroy.
 function game.DestroyClientUIControl(control) end
 
----Gets a root-level ContainerControl by name. If multiple root-level ContainerControls with the same name exist, the first matching ContainerControl by runtime instantiation order will be returned.
+---Gets a root-level ContainerControl by name.
+---- If multiple root-level ContainerControls with the same name exist, the first matching ContainerControl by runtime instantiation order will be returned.
+---- Root-level ContainerControls are instantiated in descending order from the list displayed in the editor's Interface Layout menu.
+---- When a root-level ContainerControl is added to the Client UI hierarchy using the "Activate UI Control Group in Control Group Library" node on a Server Control Template containing a Client Container Control component, the created ContainerControl is appended to the Client UI hierarchy, regardless of the layer specified in its template.
+---- Returns nil if no matches are found.
 ---
----Root-level ContainerControls are instantiated in descending order from the list displayed in the editor's Interface Layout menu.
----
----When a root-level ContainerControl is added to the Client UI hierarchy by using the "Activate UI Control Group in Control Group Library" node on a Server Control Template containing a Client Container Control component, the created ContainerControl is appended to the Client UI hierarchy, regardless of the layer specified in its template.
----
----Returns nil if no matches are found.
+---**See:**
+---- [ClientUIBaseControl.name](https://haminpants.github.io/miliastra-lua-api/class/ClientUIBaseControl.html#ClientUIBaseControl.name)
 ---@param name string # The name of the Client Control to find.
 ---@return ClientUIContainerControl? control # The root-level ContainerControl with the specified name.
----@see ClientUIBaseControl.name
 function game.FindClientUIRoot(name) end
 
 ---Gets a Client Control by runtime ID.
+---- Returns nil if no matches are found.
 ---
----Returns nil if no matches are found.
+---**See:**
+---- [ClientUIBaseControl.id](https://haminpants.github.io/miliastra-lua-api/class/ClientUIBaseControl.html#ClientUIBaseControl.id)
 ---@param id number # The runtime ID of the Client Control to find.
 ---@return ClientControlType? control # The Client Control with the corresponding runtime ID.
----@see ClientUIBaseControl.id
 function game.GetClientUIControl(id) end
 
 ---Returns a sequence containing all active root-level ContainerControls.
@@ -32,23 +33,20 @@ function game.GetClientUIControl(id) end
 function game.GetClientUIRoots() end
 
 ---Returns the Client Control currently focused by the controller.
----
----Returns nil if no Client Control is focused.
+---- Returns nil if no Client Control is focused.
 ---@return ClientControlType? # The Client Control currently focused by the controller.
 function game.GetControllerFocus() end
 
 ---Returns the left stick input values of the connected controller.
----
----Each axis returns a range within -1 and 1, with 0 representing no input.
----@return number horizontalInput # The horizontal axis input strength. -1 represents left stick input, 1 represents right stick input.
----@return number verticalInput # The vertical axis input strength. -1 represents downward stick input, 1 represents upward stick input.
+---- Each axis returns a range within -1 (down/left) and 1 (up/right), with 0 representing no input.
+---@return number horizontalInput # The horizontal axis input strength.
+---@return number verticalInput # The vertical axis input strength.
 function game.GetControllerLeftStickAxis() end
 
 ---Returns the right stick input values of the connected controller.
----
----Each axis returns a range within -1 and 1, with 0 representing no input.
----@return number horizontalInput # The horizontal axis input strength. -1 represents left stick input, 1 represents right stick input.
----@return number verticalInput # The vertical axis input strength. -1 represents downward stick input, 1 represents upward stick input.
+---- Each axis returns a range within -1 (down/left) and 1 (up/right), with 0 representing no input.
+---@return number horizontalInput # The horizontal axis input strength.
+---@return number verticalInput # The vertical axis input strength.
 function game.GetControllerRightStickAxis() end
 
 ---Returns the cursor position originating from the bottom-left corner of the viewport.
@@ -57,34 +55,39 @@ function game.GetControllerRightStickAxis() end
 function game.GetCursorUIPos() end
 
 ---Returns the current input device type.
+---
+---**See:**
+---- [Enum.Device](https://haminpants.github.io/miliastra-lua-api/class/Enum.Device.html) for all valid device types.
 ---@return EnumItem.Device device # The current device type.
----@see Enum.Device
 function game.GetDevice() end
 
 ---Gets a declared Custom Variable from the specified entity.
+---- Returns nil if a Custom Variable with the provided name is not declared on the entity.
 ---
----Returns nil if a Custom Variable with the provided name is not declared on the entity.
+---**See:**
+---- [Enum.CustomVariableEntityType](https://haminpants.github.io/miliastra-lua-api/class/Enum.CustomVariableEntityType.html) for all entities that Custom Variables can be retrieved from.
 ---@param entity EnumItem.CustomVariableEntityType # The entity to get the Custom Variable from.
 ---@param varName string # The name of the Custom Variable to get.
 ---@return ServerDataType? value # The value of the Custom Variable.
----@see Enum.CustomVariableEntityType
 function game.GetGlobalCustomVariableValue(entity, varName) end
 
 ---Returns the language used by the client.
+---
+---**See:**
+---- [Enum.LanguageType](https://haminpants.github.io/miliastra-lua-api/class/Enum.LanguageType.html) for all valid languages.
 ---@return EnumItem.LanguageType language # The current language.
----@see Enum.LanguageType
 function game.GetLanguageType() end
 
 ---Returns the current stage mode.
+---
+---**See:**
+---- [Enum.StageMode](https://haminpants.github.io/miliastra-lua-api/class/Enum.StageMode.html) for all stage modes.
 ---@return EnumItem.StageMode # The stage mode.
----@see Enum.StageMode
 function game.GetStageMode() end
 
 ---Returns the localized value of a Script Text Variable by Text Mapping ID.
----
----If a translation is not provided for the current language, text from the Source Language will be returned.
----
----Returns `textMappingId` if no Script Text Variable with the specified ID is found.
+---- If a translation is not provided for the current language, text from the Source Language will be returned.
+---- Returns the textMappingId if no Script Text Variable with the specified ID is found.
 ---@param textMappingId string # The ID of the Script Text Variable.
 ---@return string localizedText # The localized text.
 function game.GetText(textMappingId) end
@@ -95,17 +98,17 @@ function game.GetText(textMappingId) end
 function game.GetUICanvasSize() end
 
 ---Creates a new Client Control instance.
+---- The created Client Control is appended to the parent's list of children, assigning it the next largest sibling index.
 ---
----The created Client Control is appended to the parent's list of children, assigning it the next largest sibling index.
+---**See:**
+---- [ClientUIBaseControl.SetSiblingIndex](https://haminpants.github.io/miliastra-lua-api/class/ClientUIBaseControl.html#ClientUIBaseControl.SetSiblingIndex) for detailed sibling-index behavior.
 ---@param templateIndex number # The index of the Client Control Template to create.
 ---@param parent ClientControlType # The Client Control which will be the parent of the created Client Control.
 ---@return ClientControlType # The created Client Control instance.
----@see ClientUIBaseControl.SetSiblingIndex for sibling-index behavior.
 function game.InstantiateClientUIControl(templateIndex, parent) end
 
 ---Checks if the specified audio instance is currently active in memory.
----
----Returns false if an audio instance for the provided ID does not exist.
+---- Returns false if an audio instance for the provided ID does not exist.
 ---@param audioInstanceId number # The ID of the audio instance to check the status of.
 ---@return boolean alive # Whether the audio instance for the given ID is alive.
 function game.IsAudioAlive(audioInstanceId) end
@@ -119,8 +122,7 @@ function game.IsLevelTimePaused() end
 function game.IsTestPlay() end
 
 ---Suspends or resumes level time.
----
----While paused, OnLevelUpdate lifecycle functions will not execute.
+---- While paused, OnLevelUpdate lifecycle functions will not execute.
 ---
 ---Only takes effect in single-player stages.
 ---@param pause boolean # Whether to pause level time.
@@ -147,7 +149,8 @@ function game.SetControllerFocus(control) end
 ---@param audioInstanceId number # The ID of the audio instance to stop.
 function game.StopAudio(audioInstanceId) end
 
----Creates a Tween instance targeting the given object. Once created, the target values can no longer be changed.
+---Creates a Tween instance targeting the given object.
+---- Once created, the target values can no longer be changed.
 ---@param object ClientControlType # The object to modify the fields of.
 ---@param targetValues TweenTarget # A table containing the target values of fields to modify during the Tween. A warning will be raised if a field in the table is not tweenable.
 ---@param duration number # The duration of the Tween in seconds.

@@ -6,83 +6,83 @@
 ---@field FullName string # [Read] The fully qualified name of the enum (e.g., Enum.EaseType.InQuad).
 ---@field EnumType string # [Read] The name of the enum type (e.g., EaseType for Enum.EaseType.InQuad).
 
----See [Enum.ControllerKeyCode](lua://Enum.ControllerKeyCode) for all enum values.
+---Represents an enum value from [Enum.ControllerKeyCode](https://haminpants.github.io/miliastra-lua-api/class/Enum.ControllerKeyCode.html).
 ---@class EnumItem.ControllerKeyCode : EnumItem
 
----See [Enum.ControllerNavigationDir](lua://Enum.ControllerNavigationDir) for all enum values.
+---Represents an enum value from [Enum.ControllerNavigationDir](https://haminpants.github.io/miliastra-lua-api/class/Enum.ControllerNavigationDir.html).
 ---@class EnumItem.ControllerNavigationDir : EnumItem
 
----See [Enum.ControllerNavigationEventType](lua://Enum.ControllerNavigationEventType) for all enum values.
+---Represents an enum value from [Enum.ControllerNavigationEventType](https://haminpants.github.io/miliastra-lua-api/class/Enum.ControllerNavigationEventType.html).
 ---@class EnumItem.ControllerNavigationEventType : EnumItem
 
----See [Enum.ControllerNavigationMode](lua://Enum.ControllerNavigationMode) for all enum values.
+---Represents an enum value from [Enum.ControllerNavigationMode](https://haminpants.github.io/miliastra-lua-api/class/Enum.ControllerNavigationMode.html).
 ---@class EnumItem.ControllerNavigationMode : EnumItem
 
----See [Enum.CursorEventType](lua://Enum.CursorEventType) for all enum values.
+---Represents an enum value from [Enum.CursorEventType](https://haminpants.github.io/miliastra-lua-api/class/Enum.CursorEventType.html).
 ---@class EnumItem.CursorEventType : EnumItem
 
----See [Enum.CustomVariableEntityType](lua://Enum.CustomVariableEntityType) for all enum values.
+---Represents an enum value from [Enum.CustomVariableEntityType](https://haminpants.github.io/miliastra-lua-api/class/Enum.CustomVariableEntityType.html).
 ---@class EnumItem.CustomVariableEntityType : EnumItem
 
----See [Enum.Device](lua://Enum.Device) for all enum values.
+---Represents an enum value from [Enum.Device](https://haminpants.github.io/miliastra-lua-api/class/Enum.Device.html).
 ---@class EnumItem.Device : EnumItem
 
----See [Enum.EaseType](lua://Enum.EaseType) for all enum values.
+---Represents an enum value from [Enum.EaseType](https://haminpants.github.io/miliastra-lua-api/class/Enum.EaseType.html).
 ---@class EnumItem.EaseType : EnumItem
 
----See [Enum.ImageFillType](lua://Enum.ImageFillType) for all enum values.
+---Represents an enum value from [Enum.ImageFillType](https://haminpants.github.io/miliastra-lua-api/class/Enum.ImageFillType.html).
 ---@class EnumItem.ImageFillType : EnumItem
 
----See [Enum.ImageFillHorizontalType](lua://Enum.ImageFillHorizontalType) for all enum values.
+---Represents an enum value from [Enum.ImageFillHorizontalType](https://haminpants.github.io/miliastra-lua-api/class/Enum.ImageFillHorizontalType.html).
 ---@class EnumItem.ImageFillHorizontalType : EnumItem
 
----See [Enum.ImageFillRadial90Type](lua://Enum.ImageFillRadial90Type) for all enum values.
+---Represents an enum value from [Enum.ImageFillRadial90Type](https://haminpants.github.io/miliastra-lua-api/class/Enum.ImageFillRadial90Type.html).
 ---@class EnumItem.ImageFillRadial90Type : EnumItem
 
----See [Enum.ImageFillRadialType](lua://Enum.ImageFillRadialType) for all enum values.
+---Represents an enum value from [Enum.ImageFillRadialType](https://haminpants.github.io/miliastra-lua-api/class/Enum.ImageFillRadialType.html).
 ---@class EnumItem.ImageFillRadialType : EnumItem
 
----See [Enum.ImageFillVerticalType](lua://Enum.ImageFillVerticalType) for all enum values.
+---Represents an enum value from [Enum.ImageFillVerticalType](https://haminpants.github.io/miliastra-lua-api/class/Enum.ImageFillVerticalType.html).
 ---@class EnumItem.ImageFillVerticalType : EnumItem
 
----See [Enum.ImageMaskSoftEdgeMode](lua://Enum.ImageMaskSoftEdgeMode) for all enum values.
+---Represents an enum value from [Enum.ImageMaskSoftEdgeMode](https://haminpants.github.io/miliastra-lua-api/class/Enum.ImageMaskSoftEdgeMode.html).
 ---@class EnumItem.ImageMaskSoftEdgeMode : EnumItem
 
----See [Enum.ImageSource](lua://Enum.ImageSource) for all enum values.
+---Represents an enum value from [Enum.ImageSource](https://haminpants.github.io/miliastra-lua-api/class/Enum.ImageSource.html).
 ---@class EnumItem.ImageSource : EnumItem
 
----See [Enum.ImageType](lua://Enum.ImageType) for all enum values.
+---Represents an enum value from [Enum.ImageType](https://haminpants.github.io/miliastra-lua-api/class/Enum.ImageType.html).
 ---@class EnumItem.ImageType : EnumItem
 
----See [Enum.KeyEventType](lua://Enum.KeyEventType) for all enum values.
+---Represents an enum value from [Enum.KeyEventType](https://haminpants.github.io/miliastra-lua-api/class/Enum.KeyEventType.html).
 ---@class EnumItem.KeyEventType : EnumItem
 
----See [Enum.KeyboardKeyCode](lua://Enum.KeyboardKeyCode) for all enum values.
+---Represents an enum value from [Enum.KeyboardKeyCode](https://haminpants.github.io/miliastra-lua-api/class/Enum.KeyboardKeyCode.html).
 ---@class EnumItem.KeyboardKeyCode : EnumItem
 
----See [Enum.LanguageType](lua://Enum.LanguageType) for all enum values.
+---Represents an enum value from [Enum.LanguageType](https://haminpants.github.io/miliastra-lua-api/class/Enum.LanguageType.html).
 ---@class EnumItem.LanguageType : EnumItem
 
----See [Enum.ParamType](lua://Enum.ParamType) for all enum values.
+---Represents an enum value from [Enum.ParamType](https://haminpants.github.io/miliastra-lua-api/class/Enum.ParamType.html).
 ---@class EnumItem.ParamType : EnumItem
 
----See [Enum.ScrollAlignType](lua://Enum.ScrollAlignType) for all enum values.
+---Represents an enum value from [Enum.ScrollAlignType](https://haminpants.github.io/miliastra-lua-api/class/Enum.ScrollAlignType.html).
 ---@class EnumItem.ScrollAlignType : EnumItem
 
----See [Enum.ScrollDirection](lua://Enum.ScrollDirection) for all enum values.
+---Represents an enum value from [Enum.ScrollDirection](https://haminpants.github.io/miliastra-lua-api/class/Enum.ScrollDirection.html).
 ---@class EnumItem.ScrollDirection : EnumItem
 
----See [Enum.ScrollLayoutConstraint](lua://Enum.ScrollLayoutConstraint) for all enum values.
+---Represents an enum value from [Enum.ScrollLayoutConstraint](https://haminpants.github.io/miliastra-lua-api/class/Enum.ScrollLayoutConstraint.html).
 ---@class EnumItem.ScrollLayoutConstraint : EnumItem
 
----See [Enum.StageMode](lua://Enum.StageMode) for all enum values.
+---Represents an enum value from [Enum.StageMode](https://haminpants.github.io/miliastra-lua-api/class/Enum.StageMode.html).
 ---@class EnumItem.StageMode : EnumItem
 
----See [Enum.TextHorizontalAlignment](lua://Enum.TextHorizontalAlignment) for all enum values.
+---Represents an enum value from [Enum.TextHorizontalAlignment](https://haminpants.github.io/miliastra-lua-api/class/Enum.TextHorizontalAlignment.html).
 ---@class EnumItem.TextHorizontalAlignment : EnumItem
 
----See [Enum.TextVerticalAlignment](lua://Enum.TextVerticalAlignment) for all enum values.
+---Represents an enum value from [Enum.TextVerticalAlignment](https://haminpants.github.io/miliastra-lua-api/class/Enum.TextVerticalAlignment.html).
 ---@class EnumItem.TextVerticalAlignment : EnumItem
 
----See [Enum.UIAnimationLayer](lua://Enum.UIAnimationLayer) for all enum values.
+---Represents an enum value from [Enum.UIAnimationLayer](https://haminpants.github.io/miliastra-lua-api/class/Enum.UIAnimationLayer.html).
 ---@class EnumItem.UIAnimationLayer : EnumItem
