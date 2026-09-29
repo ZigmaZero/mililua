@@ -3,11 +3,12 @@ local ControlDimensionsUtils = require "utils.ControlDimensionsUtils"
 local class = "core.class"
 
 ---@class MiliastraFrontend
+---@field new fun(uiRoot): MiliastraFrontend
 local MiliastraFrontend = class()
 
 function MiliastraFrontend:init(uiRoot)
     self.uiRoot = uiRoot
-
+    self.hoveringPort = nil
     self.textRegistry = {}
 end
 
@@ -218,10 +219,7 @@ function MiliastraFrontend:getHoveredPort(
     x,
     y
 )
-    -- TODO:
-    -- Determine which InputPortView/OutputPortView
-    -- is currently underneath the cursor.
-    --
-    -- Return the associated logical Port,
-    -- or nil if no port is hovered.
+    return self.hoveringPort
 end
+
+return MiliastraFrontend

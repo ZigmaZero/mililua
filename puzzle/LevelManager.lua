@@ -1,19 +1,25 @@
 local class = require "core.class"
 
 ---@class LevelManager
+---@field new fun() : LevelManager
 local LevelManager = class()
 
 function LevelManager:init()
+    self.index_to_id = {}
+    self.id_to_index = {}
     self.levels = {}
     self.currentLevel = nil
 end
 
 function LevelManager:addLevel(level)
-    self.levels[level.id] = level
+    self.index_to_id[#self.index_to_id+1] = level.id
+    self.id_to_index[level.id] = #self.index_to_id
+    self.levels[#self.levels+1] = level
 end
 
+---@return Puzzle
 function LevelManager:getLevel(id)
-    return self.levels[id]
+    return self.levels[self.id_to_index[id]]
 end
 
 function LevelManager:loadLevel(id)
@@ -25,3 +31,5 @@ function LevelManager:loadLevel(id)
 
     return level
 end
+
+return LevelManager

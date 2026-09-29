@@ -60,3 +60,5 @@ function Game:testCircuit()
 
     return result
 end
+
+return Game

@@ -27,7 +27,7 @@ end
 
 function HUDView:setInfo(text)
     self.frontend:setText(
-        "info",
+        "level_info",
         text
     )
 end
@@ -43,7 +43,7 @@ function HUDView:showSuccess()
     self:setStatus("Circuit complete!")
 end
 
-function HUDView:showFailure()
+function HUDView:showFailure(result)
     self:setStatus("Circuit does not satisfy the requirements.")
 end
 
