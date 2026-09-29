@@ -4,7 +4,6 @@ local class = require "core.class"
 ---@field new fun(frontend: MiliastraFrontend): Game
 local Game = class()
 local CircuitEditor = require "game.CircuitEditor"
-local ComponentPalette = require "game.ComponentPalette"
 local LevelManager = require "puzzle.LevelManager"
 local Circuit      = require "circuit.Circuit"
 
@@ -47,9 +46,12 @@ function Game:loadLevel(level)
         self.editor:createNode("OUTPUT", -400, -200 + (150 * index), name)
     end
 
-    self.palette = ComponentPalette.new(self.editor, self.frontend)
     print("Refreshing components with " .. #level.allowedComponents .. " entries")
-    self.palette:refreshComponents(level)
+    self.palette = level.allowedComponents
+    print(#self.palette)
+    local paletteReferenceSequence = self.frontend:createPalette(self.palette, function (index)
+        self.editor:createComponent(self.palette[index], 0, 0)
+    end)
 
     self.frontend:setText("level_name", level.name)
     self.frontend:setText("level_info", level.info)

@@ -22,6 +22,21 @@ function CircuitComponent:init(id, type)
     self.outputs = {}
 
     self.enabled = true
+    self.referenceId = 0
+end
+
+---@param reference ClientControlType?
+function CircuitComponent:setReference(reference)
+    if not reference then
+        self.referenceId = 0
+        return
+    end
+    self.referenceId = reference.id
+end
+
+---@return ClientControlType?
+function CircuitComponent:reference()
+    return game.GetClientUIControl(self.referenceId)
 end
 
 function CircuitComponent:getType()

@@ -13,6 +13,22 @@ function Wire:init(id, source, destination)
 
     source:connect(self)
     destination:connect(self)
+
+    self.referenceId = 0
+end
+
+---@param reference ClientControlType?
+function Wire:setReference(reference)
+        if not reference then
+        self.referenceId = 0
+        return
+    end
+    self.referenceId = reference.id
+end
+
+---@return ClientControlType?
+function Wire:reference()
+    return game.GetClientUIControl(self.referenceId)
 end
 
 function Wire:remove()

@@ -11,6 +11,21 @@ function Port:init(owner, index)
     self.index = index
     self.value = false
     self.type = nil
+    self.referenceId = 0
+end
+
+---@param reference ClientControlType?
+function Port:setReference(reference)
+        if not reference then
+        self.referenceId = 0
+        return
+    end
+    self.referenceId = reference.id
+end
+
+---@return ClientControlType?
+function Port:reference()
+    return game.GetClientUIControl(self.referenceId)
 end
 
 ---@return boolean

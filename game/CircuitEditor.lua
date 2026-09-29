@@ -1,6 +1,4 @@
 local class = require "core.class"
-local ComponentView = require "frontend.ComponentView"
-local WireView      = require "frontend.WireView"
 ---@class CircuitEditor
 ---@field new fun(circuit: Circuit, frontend: MiliastraFrontend): CircuitEditor
 local CircuitEditor = class()
@@ -34,68 +32,45 @@ function CircuitEditor:createComponent(
             y
         )
 
-    local view =
-        ComponentView.new(
-            component,
-            self.frontend,
-            reference,
-            self
-        )
+    component:setReference(reference)
 
-    self.componentViews[component.id] = view
+    self.componentViews[component.id] = component
 
-    return view
+    return component
 end
 
 function CircuitEditor:removeComponent(component)
-    local view =
-        self.componentViews[component.id]
-
-    if view then
-        view:destroy()
-        self.componentViews[component.id] = nil
-    end
-
+    self.componentViews[component.id] = nil
     self.circuit:removeComponent(component)
 end
 
 function CircuitEditor:removeWire(wire)
-    local view = self.wireViews[wire.id]
-
-    if view then
-        view:destroy()
-        self.wireViews[wire.id] = nil
-    end
+    self.wireViews[wire.id] = nil
+    self.circuit:disconnect(wire)
 end
 
 function CircuitEditor:createNode(componentType, x, y, name)
-    local ref = nil
+    local component = nil
     if componentType == "INPUT" then
-        ref = self.circuit:addInputNode(name)
+        component = self.circuit:addInputNode(name)
     else
-        ref = self.circuit:addOutputNode(name)
+        component = self.circuit:addOutputNode(name)
     end
 
-    ref:setPosition(x, y)
+    component:setPosition(x, y)
 
     local reference =
         self.frontend:createComponentVisual(
-            ref,
+            component,
             x,
             y
         )
 
-    local view =
-        ComponentView.new(
-            ref,
-            self.frontend,
-            reference,
-            self
-        )
+    component:setReference(reference)
 
-    self.componentViews[ref.id] = view
+    self.componentViews[component.id] = component
 
-    return view
+    return component
 end
 
 ---@param source Port
@@ -136,16 +111,9 @@ function CircuitEditor:connectPorts(
             wire
         )
 
-    local view =
-        WireView.new(
-            wire,
-            self.frontend,
-            reference,
-            self
-        )
+    wire:setReference(reference)
 
-    self.wireViews[wire.id] = view
-
+    self.wireViews[wire.id] = wire
     return wire
 end
 
@@ -157,59 +125,6 @@ function CircuitEditor:isOppositePortPair(a, b)
         a.type == "INPUT" and
         b.type == "OUTPUT"
     )
-end
-
----@param port Port
----@param x any
----@param y any
----@return table
-function CircuitEditor:createTemporaryWire(
-    port,
-    x,
-    y
-)
-    local portRef = self.componentViews[port.owner.id].reference
-    local reference =
-        self.frontend:createTemporaryWireVisual(
-            portRef,
-            port.index,
-            x,
-            y
-        )
-
-    local view =
-        WireView:new(
-            nil,
-            self.frontend,
-            reference,
-            self
-        )
-
-    table.insert(
-        self.temporaryWireViews,
-        view
-    )
-
-    return view
-end
-
-function CircuitEditor:destroyTemporaryWire(
-    wireView
-)
-    wireView:destroy()
-
-    for i, view in ipairs(
-        self.temporaryWireViews
-    ) do
-        if view == wireView then
-            table.remove(
-                self.temporaryWireViews,
-                i
-            )
-
-            break
-        end
-    end
 end
 
 return CircuitEditor
