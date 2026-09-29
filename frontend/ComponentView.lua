@@ -27,7 +27,6 @@ function ComponentView:init(component, frontend, reference, editor)
     self.dragOffsetY = 0
 
     self:_createPortViews()
-    self:_bindListeners()
 end
 
 function ComponentView:_createPortViews()
@@ -62,105 +61,6 @@ function ComponentView:_createPortViews()
                 reference
             )
     end
-end
-
-function ComponentView:_bindListeners()
-    self.frontend:onDragStart(
-        game.GetClientUIControl(self.referenceId),
-        function(x, y)
-            self:onDragStart(x, y)
-        end
-    )
-
-    self.frontend:onDrag(
-        game.GetClientUIControl(self.referenceId),
-        function(x, y)
-            self:onDrag(x, y)
-        end
-    )
-
-    self.frontend:onDragEnd(
-        game.GetClientUIControl(self.referenceId),
-        function(x, y)
-            self:onDragEnd(x, y)
-        end
-    )
-
-    self.frontend:onRMB(
-        game.GetClientUIControl(self.referenceId),
-        function()
-            self:onRMB()
-        end
-    )
-end
-
-function ComponentView:onDragStart(x, y)
-    self.dragging = true
-
-    local componentX, componentY =
-        self.component:getPosition()
-
-    self.dragOffsetX = componentX - x
-    self.dragOffsetY = componentY - y
-
-    self.frontend:setDragging(
-        game.GetClientUIControl(self.referenceId),
-        true
-    )
-end
-
-function ComponentView:onDrag(x, y)
-    if not self.dragging then
-        return
-    end
-
-    self.component:setPosition(
-        x + self.dragOffsetX,
-        y + self.dragOffsetY
-    )
-
-    self.frontend:setPosition(
-        game.GetClientUIControl(self.referenceId),
-        self.component.x,
-        self.component.y
-    )
-end
-
-function ComponentView:onDragEnd(x, y)
-    if not self.dragging then
-        return
-    end
-
-    self.dragging = false
-
-    local finalX, finalY =
-        self.frontend:getDropPosition(
-            game.GetClientUIControl(self.referenceId),
-            x,
-            y
-        )
-
-    self.component:setPosition(
-        finalX,
-        finalY
-    )
-
-    self.frontend:setPosition(
-        game.GetClientUIControl(self.referenceId),
-        finalX,
-        finalY
-    )
-
-    self.frontend:setDragging(
-        game.GetClientUIControl(self.referenceId),
-        false
-    )
-end
-
-function ComponentView:onRMB()
-    self.editor:removeComponent(
-        self.component
-    )
 end
 
 function ComponentView:destroy()

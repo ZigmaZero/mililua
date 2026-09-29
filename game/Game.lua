@@ -48,7 +48,8 @@ function Game:loadLevel(level)
     end
 
     self.palette = ComponentPalette.new(self.editor, self.frontend)
-    self.palette:refreshComponents(level.allowedComponents)
+    print("Refreshing components with " .. #level.allowedComponents .. " entries")
+    self.palette:refreshComponents(level)
 
     self.frontend:setText("level_name", level.name)
     self.frontend:setText("level_info", level.info)

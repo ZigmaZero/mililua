@@ -17,15 +17,6 @@ function WireView:init(wire, frontend, reference, editor)
     self:_bindListeners()
 end
 
-function WireView:_bindListeners()
-    self.frontend:onRMB(
-        game.GetClientUIControl(self.referenceId),
-        function()
-            self:onRemove()
-        end
-    )
-end
-
 ---@param portView PortView
 ---@param x any
 ---@param y any
@@ -38,14 +29,11 @@ function WireView:setCursorPosition(portView, x, y)
     )
 end
 
-function WireView:onRemove()
-    self.editor:removeWire(self.wire)
-end
-
 function WireView:destroy()
     self.frontend:destroyObject(
         self.reference
     )
+    self.editor:removeWire(self)
 end
 
 return WireView

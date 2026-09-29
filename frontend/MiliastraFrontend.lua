@@ -434,7 +434,7 @@ function MiliastraFrontend:createPalette(entries, callback)
 
     local retval = {}
     for index, value in ipairs(grid:GetChildren()) do
-        retval[grid:GetItemIndex(value)] = value
+        retval[grid:GetItemIndex(value) + 1] = value
     end
 
     return retval

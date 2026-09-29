@@ -59,6 +59,15 @@ function CircuitEditor:removeComponent(component)
     self.circuit:removeComponent(component)
 end
 
+function CircuitEditor:removeWire(wire)
+    local view = self.wireViews[wire.id]
+
+    if view then
+        view:destroy()
+        self.wireViews[wire.id] = nil
+    end
+end
+
 function CircuitEditor:createNode(componentType, x, y, name)
     local ref = nil
     if componentType == "INPUT" then
@@ -77,7 +86,7 @@ function CircuitEditor:createNode(componentType, x, y, name)
         )
 
     local view =
-        ComponentView:new(
+        ComponentView.new(
             ref,
             self.frontend,
             reference,
@@ -128,7 +137,7 @@ function CircuitEditor:connectPorts(
         )
 
     local view =
-        WireView:new(
+        WireView.new(
             wire,
             self.frontend,
             reference,

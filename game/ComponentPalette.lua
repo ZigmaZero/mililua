@@ -14,9 +14,11 @@ end
 
 function ComponentPalette:refreshComponents(level)
     self.entries = level.allowedComponents
+    print(#self.entries)
     local paletteReferenceSequence = self.frontend:createPalette(self.entries, function (index)
         self.editor:createComponent(self.entries[index], 0, 0)
     end)
+    print(#paletteReferenceSequence)
 
     if not paletteReferenceSequence then
         return
