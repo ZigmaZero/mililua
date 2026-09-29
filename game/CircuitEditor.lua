@@ -38,36 +38,113 @@ function CircuitEditor:createComponent(
         reference:GetChild("CursorEventArea"):AddCursorEventListener(Enum.CursorEventType.CursorBeginDrag,
             function(eventData)
                 local dx, dy = eventData:GetUIPosDelta()
-                local cx, cy = component:getPosition()
-                component:setPosition(cx + dx, cy + dy)
-                self.frontend:setPosition(reference, cx + dx, cy + dy)
+                self.frontend:updatePosition(reference, dx, dy)
+                local cx, cy = reference:GetAnchoredPosition()
+                component:setPosition(cx, cy)
                 self.frontend:setDragging(reference, true)
+                --BRO WE ALSO NEED TO UPDATE WIRES
+                for _, inputPort in ipairs(component.inputs) do
+                    ---@cast inputPort InputPort
+                    local wire = inputPort.connection
+                    if not wire then
+                        goto continue
+                    end
+                    local srcRef = wire.source:reference()
+                    local dstRef = wire.destination:reference()
+                    local wireVisual = wire:reference()
+                    if srcRef and dstRef and wireVisual then
+                        self.frontend:updateWireVisual(
+                            srcRef, dstRef, wire, wireVisual
+                        )
+                    end
+                    ::continue::
+                end
+                for _, outputPort in ipairs(component.outputs) do
+                    ---@cast outputPort OutputPort
+                    for _, wire in ipairs(outputPort.connections) do
+                        local srcRef = wire.source:reference()
+                        local dstRef = wire.destination:reference()
+                        local wireVisual = wire:reference()
+                        if srcRef and dstRef and wireVisual then
+                            self.frontend:updateWireVisual(
+                                srcRef, dstRef, wire, wireVisual
+                            )
+                        end
+                    end
+                end
                 reference:GetChild("CursorEventArea"):AddCursorEventListener(Enum.CursorEventType.CursorDrag,
                     function(eventData)
-                        local dx, dy = eventData:GetUIPosDelta()
-                        local cx, cy = component:getPosition()
-                        component:setPosition(cx + dx, cy + dy)
-                        self.frontend:setPosition(reference, cx + dx, cy + dy)
+                        dx, dy = eventData:GetUIPosDelta()
+                        self.frontend:updatePosition(reference, dx, dy)
+                        local cx, cy = reference:GetAnchoredPosition()
+                        component:setPosition(cx, cy)
+                        --BRO WE ALSO NEED TO UPDATE WIRES
+                        for _, inputPort in ipairs(component.inputs) do
+                            ---@cast inputPort InputPort
+                            local wire = inputPort.connection
+                            if not wire then
+                                goto continue
+                            end
+                            local srcRef = wire.source:reference()
+                            local dstRef = wire.destination:reference()
+                            local wireVisual = wire:reference()
+                            if srcRef and dstRef and wireVisual then
+                                self.frontend:updateWireVisual(
+                                    srcRef, dstRef, wire, wireVisual
+                                )
+                            end
+                            ::continue::
+                        end
+                        for _, outputPort in ipairs(component.outputs) do
+                            ---@cast outputPort OutputPort
+                            for _, wire in ipairs(outputPort.connections) do
+                                local srcRef = wire.source:reference()
+                                local dstRef = wire.destination:reference()
+                                local wireVisual = wire:reference()
+                                if srcRef and dstRef and wireVisual then
+                                    self.frontend:updateWireVisual(
+                                        srcRef, dstRef, wire, wireVisual
+                                    )
+                                end
+                            end
+                        end
                     end)
                 reference:GetChild("CursorEventArea"):AddCursorEventListener(Enum.CursorEventType.CursorEndDrag,
                     function(eventData)
-                        local finalX, finalY =
-                            self.frontend:getDropPosition(
-                                reference,
-                                x,
-                                y
-                            )
+                        self.frontend:updatePosition(reference, 0, -15)
+                        local cx, cy = reference:GetAnchoredPosition()
+                        component:setPosition(cx, cy)
 
-                        component:setPosition(
-                            finalX,
-                            finalY
-                        )
-
-                        self.frontend:setPosition(
-                            reference,
-                            finalX,
-                            finalY
-                        )
+                        --BRO WE ALSO NEED TO UPDATE WIRES
+                        for _, inputPort in ipairs(component.inputs) do
+                            ---@cast inputPort InputPort
+                            local wire = inputPort.connection
+                            if not wire then
+                                goto continue
+                            end
+                            local srcRef = wire.source:reference()
+                            local dstRef = wire.destination:reference()
+                            local wireVisual = wire:reference()
+                            if srcRef and dstRef and wireVisual then
+                                self.frontend:updateWireVisual(
+                                    srcRef, dstRef, wire, wireVisual
+                                )
+                            end
+                            ::continue::
+                        end
+                        for _, outputPort in ipairs(component.outputs) do
+                            ---@cast outputPort OutputPort
+                            for _, wire in ipairs(outputPort.connections) do
+                                local srcRef = wire.source:reference()
+                                local dstRef = wire.destination:reference()
+                                local wireVisual = wire:reference()
+                                if srcRef and dstRef and wireVisual then
+                                    self.frontend:updateWireVisual(
+                                        srcRef, dstRef, wire, wireVisual
+                                    )
+                                end
+                            end
+                        end
 
                         self.frontend:setDragging(
                             reference,
@@ -134,36 +211,113 @@ function CircuitEditor:createNode(componentType, x, y, name)
         reference:GetChild("CursorEventArea"):AddCursorEventListener(Enum.CursorEventType.CursorBeginDrag,
             function(eventData)
                 local dx, dy = eventData:GetUIPosDelta()
-                local cx, cy = component:getPosition()
-                component:setPosition(cx + dx, cy + dy)
-                self.frontend:setPosition(reference, cx + dx, cy + dy)
+                self.frontend:updatePosition(reference, dx, dy)
+                local cx, cy = reference:GetAnchoredPosition()
+                component:setPosition(cx, cy)
                 self.frontend:setDragging(reference, true)
+                --BRO WE ALSO NEED TO UPDATE WIRES
+                for _, inputPort in ipairs(component.inputs) do
+                    ---@cast inputPort InputPort
+                    local wire = inputPort.connection
+                    if not wire then
+                        goto continue
+                    end
+                    local srcRef = wire.source:reference()
+                    local dstRef = wire.destination:reference()
+                    local wireVisual = wire:reference()
+                    if srcRef and dstRef and wireVisual then
+                        self.frontend:updateWireVisual(
+                            srcRef, dstRef, wire, wireVisual
+                        )
+                    end
+                    ::continue::
+                end
+                for _, outputPort in ipairs(component.outputs) do
+                    ---@cast outputPort OutputPort
+                    for _, wire in ipairs(outputPort.connections) do
+                        local srcRef = wire.source:reference()
+                        local dstRef = wire.destination:reference()
+                        local wireVisual = wire:reference()
+                        if srcRef and dstRef and wireVisual then
+                            self.frontend:updateWireVisual(
+                                srcRef, dstRef, wire, wireVisual
+                            )
+                        end
+                    end
+                end
                 reference:GetChild("CursorEventArea"):AddCursorEventListener(Enum.CursorEventType.CursorDrag,
                     function(eventData)
-                        local dx, dy = eventData:GetUIPosDelta()
-                        local cx, cy = component:getPosition()
-                        component:setPosition(cx + dx, cy + dy)
-                        self.frontend:setPosition(reference, cx + dx, cy + dy)
+                        dx, dy = eventData:GetUIPosDelta()
+                        self.frontend:updatePosition(reference, dx, dy)
+                        local cx, cy = reference:GetAnchoredPosition()
+                        component:setPosition(cx, cy)
+                        --BRO WE ALSO NEED TO UPDATE WIRES
+                        for _, inputPort in ipairs(component.inputs) do
+                            ---@cast inputPort InputPort
+                            local wire = inputPort.connection
+                            if not wire then
+                                goto continue
+                            end
+                            local srcRef = wire.source:reference()
+                            local dstRef = wire.destination:reference()
+                            local wireVisual = wire:reference()
+                            if srcRef and dstRef and wireVisual then
+                                self.frontend:updateWireVisual(
+                                    srcRef, dstRef, wire, wireVisual
+                                )
+                            end
+                            ::continue::
+                        end
+                        for _, outputPort in ipairs(component.outputs) do
+                            ---@cast outputPort OutputPort
+                            for _, wire in ipairs(outputPort.connections) do
+                                local srcRef = wire.source:reference()
+                                local dstRef = wire.destination:reference()
+                                local wireVisual = wire:reference()
+                                if srcRef and dstRef and wireVisual then
+                                    self.frontend:updateWireVisual(
+                                        srcRef, dstRef, wire, wireVisual
+                                    )
+                                end
+                            end
+                        end
                     end)
                 reference:GetChild("CursorEventArea"):AddCursorEventListener(Enum.CursorEventType.CursorEndDrag,
                     function(eventData)
-                        local finalX, finalY =
-                            self.frontend:getDropPosition(
-                                reference,
-                                x,
-                                y
-                            )
+                        self.frontend:updatePosition(reference, 0, -15)
+                        local cx, cy = reference:GetAnchoredPosition()
+                        component:setPosition(cx, cy)
 
-                        component:setPosition(
-                            finalX,
-                            finalY
-                        )
-
-                        self.frontend:setPosition(
-                            reference,
-                            finalX,
-                            finalY
-                        )
+                        --BRO WE ALSO NEED TO UPDATE WIRES
+                        for _, inputPort in ipairs(component.inputs) do
+                            ---@cast inputPort InputPort
+                            local wire = inputPort.connection
+                            if not wire then
+                                goto continue
+                            end
+                            local srcRef = wire.source:reference()
+                            local dstRef = wire.destination:reference()
+                            local wireVisual = wire:reference()
+                            if srcRef and dstRef and wireVisual then
+                                self.frontend:updateWireVisual(
+                                    srcRef, dstRef, wire, wireVisual
+                                )
+                            end
+                            ::continue::
+                        end
+                        for _, outputPort in ipairs(component.outputs) do
+                            ---@cast outputPort OutputPort
+                            for _, wire in ipairs(outputPort.connections) do
+                                local srcRef = wire.source:reference()
+                                local dstRef = wire.destination:reference()
+                                local wireVisual = wire:reference()
+                                if srcRef and dstRef and wireVisual then
+                                    self.frontend:updateWireVisual(
+                                        srcRef, dstRef, wire, wireVisual
+                                    )
+                                end
+                            end
+                        end
 
                         self.frontend:setDragging(
                             reference,

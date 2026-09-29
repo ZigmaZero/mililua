@@ -88,9 +88,7 @@ function MiliastraFrontend:createComponentVisual(component, x, y)
         end)
     end)
     -- Set object x, y
-    local maskMidX = (ControlDimensionsUtils.getUnscaledMaxWidth(mask) + ControlDimensionsUtils.getUnscaledMinWidth(mask))/2
-    local maskMidY = (ControlDimensionsUtils.getUnscaledMaxHeight(mask) + ControlDimensionsUtils.getUnscaledMinHeight(mask))/2
-    reference:SetAnchoredPosition(x - maskMidX, y - maskMidY)
+    reference:SetAnchoredPosition(x, y)
 
     -- Return the created MiliLua object.
     return reference
@@ -131,11 +129,11 @@ function MiliastraFrontend:updateWireVisual(sourceRef, destRef, wire, visual)
     end
     ---@cast sourceCtrl ClientControlType
     ---@cast destCtrl ClientControlType
-    local sourceX = (ControlDimensionsUtils.getUnscaledMaxWidth(sourceCtrl) + ControlDimensionsUtils.getUnscaledMinWidth(sourceCtrl))/2
-    local sourceY = (ControlDimensionsUtils.getUnscaledMaxHeight(sourceCtrl) + ControlDimensionsUtils.getUnscaledMinHeight(sourceCtrl))/2
-    local destX = (ControlDimensionsUtils.getUnscaledMaxWidth(destCtrl) + ControlDimensionsUtils.getUnscaledMinWidth(destCtrl))/2
-    local destY = (ControlDimensionsUtils.getUnscaledMaxHeight(destCtrl) + ControlDimensionsUtils.getUnscaledMinHeight(destCtrl))/2
-
+    
+    -- calculates in mask anchor coordinates to prevent headaches 
+    -- (this will not work for temp wires)
+    local sourceX, sourceY = sourceCtrl:GetAnchoredPosition()
+    local destX, destY = sourceCtrl:GetAnchoredPosition()
     local deltaX = destX - sourceX
     local deltaY = destY - sourceY
     local wireX = (sourceX + destX) / 2
@@ -146,9 +144,7 @@ function MiliastraFrontend:updateWireVisual(sourceRef, destRef, wire, visual)
     visual.sizeDeltaX = wireSizeDelta
 
     -- Set object x, y
-    local maskMidX = (ControlDimensionsUtils.getUnscaledMaxWidth(mask) + ControlDimensionsUtils.getUnscaledMinWidth(mask))/2
-    local maskMidY = (ControlDimensionsUtils.getUnscaledMaxHeight(mask) + ControlDimensionsUtils.getUnscaledMinHeight(mask))/2
-    visual:SetAnchoredPosition(wireX - maskMidX, wireY - maskMidY)
+    visual:SetAnchoredPosition(wireX, wireY)
     visual:SetLocalRotation(0, 0, wireRotation)
 
     return visual
@@ -171,22 +167,23 @@ function MiliastraFrontend:createTemporaryWireVisual(
     if not sourceCtrl then
         return visual
     end
-    local sourceX = (ControlDimensionsUtils.getUnscaledMaxWidth(sourceCtrl) + ControlDimensionsUtils.getUnscaledMinWidth(sourceCtrl))/2
-    local sourceY = (ControlDimensionsUtils.getUnscaledMaxHeight(sourceCtrl) + ControlDimensionsUtils.getUnscaledMinHeight(sourceCtrl))/2
-    
-    local deltaX = x - sourceX
-    local deltaY = y - sourceY
-    local wireX = (sourceX + x) / 2
-    local wireY = (sourceY + y) / 2
+    local sourceX, sourceY = sourceCtrl:GetAnchoredPosition()
+    local maskMidX = (ControlDimensionsUtils.getUnscaledMaxWidth(mask) + ControlDimensionsUtils.getUnscaledMinWidth(mask))/2
+    local maskMidY = (ControlDimensionsUtils.getUnscaledMaxHeight(mask) + ControlDimensionsUtils.getUnscaledMinHeight(mask))/2
+    local destX = x - maskMidX
+    local destY = y - maskMidY
+
+    local deltaX = destX - sourceX
+    local deltaY = destY - sourceY
+    local wireX = (sourceX + destX) / 2
+    local wireY = (sourceY + destY) / 2
     local wireSizeDelta = math.sqrt(deltaX * deltaX + deltaY * deltaY)
     local wireRotation = math.deg(math.atan(deltaY, deltaX))
 
     visual.sizeDeltaX = wireSizeDelta
 
     -- Set object x, y
-    local maskMidX = (ControlDimensionsUtils.getUnscaledMaxWidth(mask) + ControlDimensionsUtils.getUnscaledMinWidth(mask))/2
-    local maskMidY = (ControlDimensionsUtils.getUnscaledMaxHeight(mask) + ControlDimensionsUtils.getUnscaledMinHeight(mask))/2
-    visual:SetAnchoredPosition(wireX - maskMidX, wireY - maskMidY)
+    visual:SetAnchoredPosition(wireX, wireY)
     visual:SetLocalRotation(0, 0, wireRotation)
 
     return visual
@@ -313,6 +310,19 @@ function MiliastraFrontend:setPosition(
     local anchorHeight = (h1 + h0) / 2
     local anchorWidth = (w1 + w0) / 2
     object:SetAnchoredPosition(x - anchorWidth, y - anchorHeight)
+end
+
+-- Object manipulation
+---@param object ClientControlType
+---@param dx number
+---@param dy number
+function MiliastraFrontend:updatePosition(
+    object,
+    dx,
+    dy
+)
+    local x, y = object:GetAnchoredPosition()
+    object:SetAnchoredPosition(x + dx, y + dy)
 end
 
 ---@param object ClientControlType

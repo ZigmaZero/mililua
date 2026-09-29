@@ -23,11 +23,7 @@ function public.getUnscaledMinWidth(control)
 end
 
 function public.getUnscaledMaxWidth(control)
-    if (control == nil) then
-        return public.getUnscaledWidth(nil);
-    else
-        return public.getUnscaledWidth(control.parent) * control.anchorMaxX;
-    end
+    return public.getUnscaledMinWidth(control) + public.getUnscaledWidth(control)
 end
 
 function public.getUnscaledHeight(control)
@@ -50,11 +46,7 @@ function public.getUnscaledMinHeight(control)
 end
 
 function public.getUnscaledMaxHeight(control)
-    if (control == nil) then
-        return public.getUnscaledHeight(nil);
-    else
-        return public.getUnscaledHeight(control.parent) * control.anchorMaxY;
-    end
+    return public.getUnscaledMinHeight(control) + public.getUnscaledHeight(control)
 end
 
 return public
