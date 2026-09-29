@@ -9,6 +9,7 @@ function Puzzle:init(definition)
     self.name = definition.name
     self.info = definition.info
     self.specs = definition.specs
+    self.hintText = definition.hintText
 
     self.inputs = definition.inputs
     self.outputs = definition.outputs

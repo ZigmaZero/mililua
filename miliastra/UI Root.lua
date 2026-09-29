@@ -17,8 +17,9 @@ function M.switchPage(newPage)
     root:GetChild(page):SetActive(true)
 end
 
-function M.setPopup(enable)
+function M.setPopup(enable, text)
     root:GetChild("Popup"):SetActive(enable)
+    root:FindChild("Popup/PopupBounds/PopupText").text = text
 end
 
 function OnInit()

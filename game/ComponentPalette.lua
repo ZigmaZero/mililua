@@ -1,3 +1,4 @@
+local PaletteView = require "frontend.PaletteView"
 local class = "core.class"
 local ComponentPalette = class()
 
@@ -8,6 +9,7 @@ function ComponentPalette:init(editor, frontend)
     self.frontend = frontend
 
     self.entries = {}
+    self.paletteViews = {}
 end
 
 function ComponentPalette:refreshComponents(level)
@@ -16,7 +18,13 @@ function ComponentPalette:refreshComponents(level)
         self.editor:createComponent(self.entries[index], 0, 0)
     end)
 
-    
+    if not paletteReferenceSequence then
+        return
+    end
+
+    for index, value in ipairs(paletteReferenceSequence) do
+        PaletteView.new(self.entries[index], self.frontend, value, self.editor)
+    end
 end
 
 return ComponentPalette

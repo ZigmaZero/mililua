@@ -6,7 +6,9 @@ local Level = Puzzle.new({
 
     info = "Example of an AND Gate level",
 
-    specs = "Use the AND gate to connect and finish the level",
+    specs = "Make the output be ON when both inputs are ON!",
+
+    hintText = "Use the AND gate to wire both inputs!",
 
     inputs = {
         "A",
