@@ -35,7 +35,7 @@ function CircuitEditor:createComponent(
         )
 
     local view =
-        ComponentView:new(
+        ComponentView.new(
             component,
             self.frontend,
             reference,
@@ -89,8 +89,8 @@ function CircuitEditor:createNode(componentType, x, y, name)
     return view
 end
 
----@param source OutputPort
----@param destination InputPort
+---@param source Port
+---@param destination Port
 function CircuitEditor:connectPorts(
     source,
     destination
@@ -102,10 +102,19 @@ function CircuitEditor:connectPorts(
         return nil
     end
 
+    local output = source
+    local input = destination
+
+    if source.type == "INPUT" then
+        output, input = input, output
+    end
+
+    ---@cast output OutputPort
+    ---@cast input InputPort
     local wire =
         self.circuit:connect(
-            source,
-            destination
+            output,
+            input
         )
 
     local sourceRef = self.componentViews[source.owner.id].reference

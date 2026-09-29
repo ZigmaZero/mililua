@@ -7,7 +7,7 @@ local class = require "core.class"
 local MiliastraFrontend = class()
 
 function MiliastraFrontend:init(uiRoot)
-    self.uiRoot = uiRoot
+    self.uiRootId = uiRoot.id
     self.hoveringPort = nil
     self.textRegistry = {}
 end
@@ -52,7 +52,9 @@ end
 function MiliastraFrontend:createComponentVisual(component, x, y)
     -- TODO:
     -- Create the MiliLua UI object representing this component.
-    local mask = self.uiRoot:FindChild("CircuitPage/CircuitArea/Mask")
+    local uiRoot = game.GetClientUIControl(self.uiRootId)
+    assert(uiRoot ~= nil)
+    local mask = uiRoot:FindChild("CircuitPage/CircuitArea/Mask")
     if not mask then
         return
     end
@@ -97,7 +99,9 @@ end
 
 ---@param wire Wire
 function MiliastraFrontend:createWireVisual(sourceRef, destRef, wire)
-    local mask = self.uiRoot:FindChild("CircuitPage/CircuitArea/Mask")
+    local uiRoot = game.GetClientUIControl(self.uiRootId)
+    assert(uiRoot ~= nil)
+    local mask = uiRoot:FindChild("CircuitPage/CircuitArea/Mask")
     if not mask then
         return
     end
@@ -112,7 +116,9 @@ end
 ---@param visual ClientControlType
 ---@return ClientControlType?
 function MiliastraFrontend:updateWireVisual(sourceRef, destRef, wire, visual)
-    local mask = self.uiRoot:FindChild("CircuitPage/CircuitArea/Mask")
+    local uiRoot = game.GetClientUIControl(self.uiRootId)
+    assert(uiRoot ~= nil)
+    local mask = uiRoot:FindChild("CircuitPage/CircuitArea/Mask")
     if not mask then
         return
     end
@@ -155,7 +161,9 @@ function MiliastraFrontend:createTemporaryWireVisual(
     x,
     y
 )
-    local mask = self.uiRoot:FindChild("CircuitPage/CircuitArea/Mask")
+    local uiRoot = game.GetClientUIControl(self.uiRootId)
+    assert(uiRoot ~= nil)
+    local mask = uiRoot:FindChild("CircuitPage/CircuitArea/Mask")
     if not mask then
         return
     end
@@ -342,7 +350,9 @@ function MiliastraFrontend:setWireEndPosition(
 )
     local sourceCtrl = portReference
     local visual = wireReference
-    local mask = self.uiRoot:FindChild("CircuitPage/CircuitArea/Mask")
+    local uiRoot = game.GetClientUIControl(self.uiRootId)
+    assert(uiRoot ~= nil)
+    local mask = uiRoot:FindChild("CircuitPage/CircuitArea/Mask")
 
     local sourceX = (ControlDimensionsUtils.getUnscaledMaxWidth(sourceCtrl) + ControlDimensionsUtils.getUnscaledMinWidth(sourceCtrl))/2
     local sourceY = (ControlDimensionsUtils.getUnscaledMaxHeight(sourceCtrl) + ControlDimensionsUtils.getUnscaledMinHeight(sourceCtrl))/2
@@ -381,7 +391,9 @@ end
 -- Palette Entry
 
 function MiliastraFrontend:createPalette(entries, callback)
-    local grid = self.uiRoot:FindChild("CircuitPage/PaletteArea/GridScrollerControl")
+    local uiRoot = game.GetClientUIControl(self.uiRootId)
+    assert(uiRoot ~= nil)
+    local grid = uiRoot:FindChild("CircuitPage/PaletteArea/GridScrollerControl")
     if not grid then
         return
     end
@@ -430,10 +442,13 @@ end
 
 function MiliastraFrontend:cleanupCircuitPage()
     -- nuke it
-    self.uiRoot:FindChild("CircuitPage/PaletteArea/GridScrollerControl"):RefreshItems(0, function(control, index)
+    local uiRoot = game.GetClientUIControl(self.uiRootId)
+    assert(uiRoot ~= nil)
+    uiRoot:FindChild("CircuitPage/PaletteArea/GridScrollerControl"):RefreshItems(0, function(control, index)
         -- nothing
     end)
-    local mask = self.uiRoot:FindChild("CircuitPage/CircuitArea/Mask")
+    local mask = uiRoot:FindChild("CircuitPage/CircuitArea/Mask")
+    assert(mask ~= nil)
     for index, value in ipairs(mask:GetChildren()) do
         game.DestroyClientUIControl(value)
     end

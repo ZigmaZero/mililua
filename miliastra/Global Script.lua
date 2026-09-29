@@ -5,6 +5,7 @@ local Game = require("game.Game")
 local frontend = nil
 ---@type Game?
 local game = nil
+local uiRootId = 0
 
 local M = {}
 
@@ -19,6 +20,14 @@ end
 
 function M.getGame()
     return game
+end
+
+function M.setUiRootId(id)
+    uiRootId = id
+end
+
+function M.getUiRootId()
+    return uiRootId
 end
 
 return M

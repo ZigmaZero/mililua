@@ -3,6 +3,8 @@ local View = require("frontend.View")
 local InputPortView = require("frontend.InputPortView")
 local OutputPortView = require("frontend.OutputPortView")
 
+---@class ComponentView
+---@field new fun(component, frontend, reference, editor): ComponentView
 local ComponentView = class(View)
 
 ---@param component CircuitComponent
@@ -13,7 +15,8 @@ function ComponentView:init(component, frontend, reference, editor)
     View.init(self, frontend)
 
     self.component = component
-    self.reference = reference
+    self.frontend = frontend
+    self.referenceId = reference.id
     self.editor = editor
 
     self.inputPorts = {}
@@ -31,7 +34,7 @@ function ComponentView:_createPortViews()
     for i, port in ipairs(self.component.inputs) do
         local reference =
             self.frontend:getInputPortReference(
-                self.reference,
+                game.GetClientUIControl(self.referenceId),
                 i
             )
 
@@ -47,7 +50,7 @@ function ComponentView:_createPortViews()
     for i, port in ipairs(self.component.outputs) do
         local reference =
             self.frontend:getOutputPortReference(
-                self.reference,
+                game.GetClientUIControl(self.referenceId),
                 i
             )
 
@@ -63,28 +66,28 @@ end
 
 function ComponentView:_bindListeners()
     self.frontend:onDragStart(
-        self.reference,
+        game.GetClientUIControl(self.referenceId),
         function(x, y)
             self:onDragStart(x, y)
         end
     )
 
     self.frontend:onDrag(
-        self.reference,
+        game.GetClientUIControl(self.referenceId),
         function(x, y)
             self:onDrag(x, y)
         end
     )
 
     self.frontend:onDragEnd(
-        self.reference,
+        game.GetClientUIControl(self.referenceId),
         function(x, y)
             self:onDragEnd(x, y)
         end
     )
 
     self.frontend:onRMB(
-        self.reference,
+        game.GetClientUIControl(self.referenceId),
         function()
             self:onRMB()
         end
@@ -101,7 +104,7 @@ function ComponentView:onDragStart(x, y)
     self.dragOffsetY = componentY - y
 
     self.frontend:setDragging(
-        self.reference,
+        game.GetClientUIControl(self.referenceId),
         true
     )
 end
@@ -117,7 +120,7 @@ function ComponentView:onDrag(x, y)
     )
 
     self.frontend:setPosition(
-        self.reference,
+        game.GetClientUIControl(self.referenceId),
         self.component.x,
         self.component.y
     )
@@ -132,7 +135,7 @@ function ComponentView:onDragEnd(x, y)
 
     local finalX, finalY =
         self.frontend:getDropPosition(
-            self.reference,
+            game.GetClientUIControl(self.referenceId),
             x,
             y
         )
@@ -143,13 +146,13 @@ function ComponentView:onDragEnd(x, y)
     )
 
     self.frontend:setPosition(
-        self.reference,
+        game.GetClientUIControl(self.referenceId),
         finalX,
         finalY
     )
 
     self.frontend:setDragging(
-        self.reference,
+        game.GetClientUIControl(self.referenceId),
         false
     )
 end
@@ -169,7 +172,7 @@ function ComponentView:destroy()
         portView:destroy()
     end
 
-    self.frontend:destroyObject(self.reference)
+    self.frontend:destroyObject(game.GetClientUIControl(self.referenceId))
 end
 
 return ComponentView

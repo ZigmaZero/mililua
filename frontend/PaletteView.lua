@@ -3,11 +3,16 @@ local View = require("frontend.View")
 
 local PaletteView = class(View)
 
+---@param componentType string
+---@param frontend MiliastraFrontend
+---@param reference ClientControlType
+---@param editor CircuitEditor
 function PaletteView:init(componentType, frontend, reference, editor)
     View.init(self, frontend)
 
     self.componentType = componentType
-    self.reference = reference
+    self.frontend = frontend
+    self.referenceId = reference.id
     self.editor = editor
 
     self.draggedComponent = nil
@@ -17,28 +22,28 @@ end
 
 function PaletteView:_bindListeners()
     self.frontend:onClick(
-        self.reference,
+        game.GetClientUIControl(self.referenceId),
         function(x, y)
             self:onClick()
         end
     )
 
     self.frontend:onDragStart(
-        self.reference,
+        game.GetClientUIControl(self.referenceId),
         function(x, y)
             self:onDragStart(x, y)
         end
     )
 
     self.frontend:onDrag(
-        self.reference,
+        game.GetClientUIControl(self.referenceId),
         function(x, y)
             self:onDrag(x, y)
         end
     )
 
     self.frontend:onDragEnd(
-        self.reference,
+        game.GetClientUIControl(self.referenceId),
         function(x, y)
             self:onDragEnd(x, y)
         end
