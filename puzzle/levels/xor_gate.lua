@@ -20,7 +20,11 @@ local Level = Puzzle.new({
     },
 
     allowedComponents = {
-        "XOR"
+        "NOT",
+        "AND",
+        "NAND",
+        "OR",
+        "NOR"
     },
 
     tests = {

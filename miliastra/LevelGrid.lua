@@ -5,6 +5,7 @@ function OnEnable()
     local levelManager = Global.getGame().levelManager
     local len = #levelManager.index_to_id
     script.object:RefreshItems(len, function (control, index)
+        control:GetChild("Text").text = "" .. index+1
         control:GetChild("CursorEventArea"):AddCursorEventListener(Enum.CursorEventType.CursorClick, function (eventData)
             levelDetail.setLevelDetail(script.object -- LevelGrid
             .parent -- LevelSelect

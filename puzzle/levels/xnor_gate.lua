@@ -6,7 +6,7 @@ local Level = Puzzle.new({
 
     info = "This level concerns the creation of an XNOR gate.",
 
-    specs = "Make a circuit that provides the following behavior:\nA = 0, B = 0 --> OUT = 1\nA = 1, B = 1 --> OUT = 1\nAnything else --> OUT = 0",
+    specs = "No, we're not giving you the XOR. Too easy.\n\nMake a circuit that provides the following behavior:\nA = 0, B = 0 --> OUT = 1\nA = 1, B = 1 --> OUT = 1\nAnything else --> OUT = 0",
 
     hintText = "The XNOR gate is true when both inputs have the same value.",
 
@@ -20,7 +20,11 @@ local Level = Puzzle.new({
     },
 
     allowedComponents = {
-        "XNOR"
+        "NOT",
+        "AND",
+        "NAND",
+        "OR",
+        "NOR"
     },
 
     tests = {
