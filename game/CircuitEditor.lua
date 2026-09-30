@@ -112,13 +112,6 @@ function CircuitEditor:registerComponentListeners(component, reference)
     )
 end
 
-function CircuitEditor:getPortPosition(control)
-    local ax, ay = control:GetAnchoredPosition()
-    local bx, by = control.parent:GetAnchoredPosition()
-    local cx, cy = control.parent.parent:GetAnchoredPosition()
-    return ax + bx + cx, ay + by + cy
-end
-
 function CircuitEditor:getComponentPort(portData)
     local component = self.componentViews[portData.id]
     if not component then
@@ -144,7 +137,13 @@ function CircuitEditor:finishPortDrag()
 
     local sourceRef = sourcePort:reference()
     local destRef = destinationPort:reference()
-    if not sourceRef or not destRef then
+    if not sourceRef then
+        return
+    end
+
+    sourceRef:GetChild("VFX"):SetVisible(false)
+
+    if not destRef then
         return
     end
 
@@ -164,26 +163,30 @@ end
 
 function CircuitEditor:registerPortListeners(component, reference, inOut, count)
     local pinGroup = inOut == "in" and "InputPins" or "OutputPins"
-    reference:GetChild(pinGroup):RefreshItems(count, function(control, index)
-        local portIndex = index + 1
-        local cursorEventArea = control:GetChild("CursorEventArea")
-        component[inOut == "in" and "inputs" or "outputs"][portIndex]:setReference(control)
-
-        cursorEventArea:AddCursorEventListener(
-            Enum.CursorEventType.CursorClick,
-            function()
-                local port = component[inOut == "in" and "inputs" or "outputs"][portIndex]
-                if not self.sourcePort then
-                    self.sourcePort = port
-                    return
+    local pinsRef = reference:GetChild(pinGroup)
+    for i = 1, 3 do
+        local childName = "Pin" .. i
+        local control = pinsRef:GetChild(childName)
+        control:SetVisible(i <= count)
+        if i <= count then
+            local port = component[inOut == "in" and "inputs" or "outputs"][i]
+            port:setReference(control)
+            local cursorEventArea = control:GetChild("CursorEventArea")
+            cursorEventArea:AddCursorEventListener(
+                Enum.CursorEventType.CursorClick,
+                function()
+                    if not self.sourcePort then
+                        self.sourcePort = port
+                        control:GetChild("VFX"):SetVisible(true)
+                        return
+                    end
+                    self.destinationPort = port
+                    self:finishPortDrag()
                 end
-
-                self.destinationPort = port
-                self:finishPortDrag()
-            end
-        )
-    end)
+            )
+        end
     end
+end
 
 function CircuitEditor:registerComponentPortListeners(component, reference)
     self:registerPortListeners(component, reference, "in", #component.inputs)

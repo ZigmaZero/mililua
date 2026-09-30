@@ -13,10 +13,11 @@ function MiliastraFrontend:init(uiRoot)
 end
 
 function MiliastraFrontend:getPortPosition(control)
+    local x, y = control:GetChild("ImageControl"):GetAnchoredPosition()
     local ax, ay = control:GetAnchoredPosition()
     local bx, by = control.parent:GetAnchoredPosition()
     local cx, cy = control.parent.parent:GetAnchoredPosition()
-    return ax + bx + cx, ay + by + cy
+    return x + ax + bx + cx, y + ay + by + cy
 end
 
 -- Set text
@@ -447,11 +448,13 @@ function MiliastraFrontend:createPalette(entries, callback)
         local reference = game.InstantiateClientUIControl(1073742269, container)
         reference:GetChild("TextBoxControl").text = entries[index + 1]
         local inputs = ComponentTypeToInOutCount[entries[index + 1]][1]
-        reference:GetChild("InputPins"):RefreshItems(inputs, function(control, index)
-        end)
+        for i = 1, 3 do
+            reference:GetChild("InputPins"):GetChild("Pin" .. i):SetVisible(i <= inputs)
+        end
         local outputs = ComponentTypeToInOutCount[entries[index + 1]][2]
-        reference:GetChild("OutputPins"):RefreshItems(outputs, function(control, index)
-        end)
+        for i = 1, 3 do
+            reference:GetChild("OutputPins"):GetChild("Pin" .. i):SetVisible(i <= outputs)
+        end
 
         control:GetChild("CursorEventArea"):AddCursorEventListener(Enum.CursorEventType.CursorClick, function (eventData)
             callback(index+1)
