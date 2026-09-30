@@ -4,11 +4,11 @@ local Level = Puzzle.new({
 
     name = "AND Gate",
 
-    info = "Example of an AND Gate level",
+    info = "This level concerns the creation of an AND gate.",
 
-    specs = "Make the output be ON when both inputs are ON!",
+    specs = "Make a circuit that provides the following behavior:\nA = 1, B = 1 --> OUT = 1\nAnything else --> OUT = 0",
 
-    hintText = "Use the AND gate to wire both inputs!",
+    hintText = "Doesn't this look familiar to the NAND gate...?",
 
     inputs = {
         "A",
@@ -20,7 +20,8 @@ local Level = Puzzle.new({
     },
 
     allowedComponents = {
-        "AND"
+        "NAND",
+        "NOT"
     },
 
     tests = {
@@ -30,24 +31,33 @@ local Level = Puzzle.new({
                     A = false,
                     B = false,
                 },
-                [100] = {
+                [50] = {
                     A = true
                 },
-                [300] = {
+                [100] = {
                     B = true
+                },
+                [150] = {
+                    A = false
                 }
             },
             output = {
-                [200] = {
+                [25] = {
                     OUT = false
                 },
-                [400] = {
+                [75] = {
+                    OUT = false
+                },
+                [125] = {
                     OUT = true
+                },
+                [175] = {
+                    OUT = false
                 }
             }
         }
     },
 
-    simulationLimit = 500
+    simulationLimit = 200
 })
 return Level

@@ -247,7 +247,11 @@ function CircuitEditor:createNode(componentType, x, y, name)
     local reference = self.frontend:createComponentVisual(component, x, y)
     component:setReference(reference)
 
+
     if reference then
+        -- Since this is a Input/Output node, we have to say what the name is
+        reference:GetChild("TextBoxControl").text = name
+
         self:registerComponentListeners(component, reference)
         self:registerDeleteListener(
             reference:GetChild("CursorEventArea"),
