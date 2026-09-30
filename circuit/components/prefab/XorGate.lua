@@ -17,7 +17,7 @@ function XorGate:evaluate()
     local a = self:getInput(1):getValue()
     local b = self:getInput(2):getValue()
 
-    table.insert(self.internalValues, ((not a) and b) or (a and (not b)))
+    table.insert(self.internalValues, {a ~= b})
 end
 
 return XorGate

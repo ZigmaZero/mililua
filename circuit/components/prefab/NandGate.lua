@@ -17,7 +17,7 @@ function NandGate:evaluate()
     local a = self:getInput(1):getValue()
     local b = self:getInput(2):getValue()
 
-    table.insert(self.internalValues, not (a and b))
+    table.insert(self.internalValues, {not (a and b)})
 end
 
 return NandGate

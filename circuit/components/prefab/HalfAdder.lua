@@ -2,22 +2,23 @@ local class = require "core.class"
 local LogicGate = require "circuit.components.LogicGate"
 local CircuitComponentType = require "circuit.components.CircuitComponentType"
 
----@class OrGate : LogicGate
-local OrGate = class(LogicGate)
+---@class HalfAdder : CircuitComponent
+local HalfAdder = class(LogicGate)
 
-function OrGate:init(id)
-    LogicGate.init(self, id, CircuitComponentType.OR)
+function HalfAdder:init(id)
+    LogicGate.init(self, id, CircuitComponentType.HALF_ADD)
 
     self:addInput()
     self:addInput()
     self:addOutput()
+    self:addOutput()
 end
 
-function OrGate:evaluate()
+function HalfAdder:evaluate()
     local a = self:getInput(1):getValue()
     local b = self:getInput(2):getValue()
 
-    table.insert(self.internalValues, {a or b})
+    table.insert(self.internalValues, {(a ~= b), (a and b)})
 end
 
-return OrGate
+return HalfAdder

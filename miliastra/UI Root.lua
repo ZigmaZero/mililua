@@ -2,7 +2,6 @@ local Global = require("miliastra.Global Script")
 
 local page = nil
 local M = {}
-M.canSettle = false
 
 ---@param newPage "CircuitPage" | "LevelPage" | "TitlePage"
 function M.switchPage(newPage)
@@ -15,6 +14,10 @@ function M.switchPage(newPage)
     local pageRef = uiRoot:GetChild(newPage)
     assert(pageRef ~= nil, newPage .. " is not in UI root")
     pageRef:SetActive(true)
+end
+
+function M.allowSettle()
+    script.object:FindChild("TitlePage/ToSettle"):SetActive(true)
 end
 
 function M.setPopup(enable, text)
@@ -30,7 +33,8 @@ function OnInit()
     Global.initGame(script.object)
     M.switchPage("TitlePage")
     game.Tween(script.object, {}, 120):SetOnComplete(function ()
-        M.canSettle = true
+        print("Toggling settle")
+        M.allowSettle()
     end):Play()
 end
 

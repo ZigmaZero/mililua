@@ -15,7 +15,7 @@ end
 function Delay:evaluate()
     local a = self:getInput(1):getValue()
 
-    table.insert(self.internalValues, a)
+    table.insert(self.internalValues, {a})
 end
 
 return Delay

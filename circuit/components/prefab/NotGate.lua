@@ -15,7 +15,7 @@ end
 function NotGate:evaluate()
     local a = self:getInput(1):getValue()
 
-    table.insert(self.internalValues, not a)
+    table.insert(self.internalValues, {not a})
 end
 
 return NotGate

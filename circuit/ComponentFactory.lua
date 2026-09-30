@@ -11,6 +11,8 @@ local ComponentFactory = {
         INPUT = require "circuit.components.prefab.InputNode",
         OUTPUT = require "circuit.components.prefab.OutputNode",
         DELAY = require "circuit.components.prefab.Delay",
+        HALF_ADD = require "circuit.components.prefab.HalfAdder",
+        FULL_ADD = require "circuit.components.prefab.FullAdder"
     }
 }
 

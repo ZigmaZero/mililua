@@ -17,7 +17,7 @@ function NorGate:evaluate()
     local a = self:getInput(1):getValue()
     local b = self:getInput(2):getValue()
 
-    table.insert(self.internalValues, not (a or b))
+    table.insert(self.internalValues, {not (a or b)})
 end
 
 return NorGate

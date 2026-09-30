@@ -27,7 +27,7 @@ function Register:evaluate()
     end
     self.lastClockTick = clock
 
-    table.insert(self.internalValues, self.value)
+    table.insert(self.internalValues, {self.value})
 end
 
 return Register

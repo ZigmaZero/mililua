@@ -84,7 +84,9 @@ end
 
 function CircuitComponent:tick()
     if #self.internalValues >= self.propagationTime then
-        self:getOutput(1):setValue(self.internalValues[1])
+        for index, value in ipairs(self.internalValues[1]) do
+            self:getOutput(index):setValue(value)
+        end
         table.remove(self.internalValues, 1)
     end
 end

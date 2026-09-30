@@ -6,5 +6,8 @@ return {
     require("puzzle.levels.or_gate"),
     require("puzzle.levels.nor_gate"),
     require("puzzle.levels.xor_gate"),
-    require("puzzle.levels.xnor_gate")
+    require("puzzle.levels.xnor_gate"),
+
+    require("puzzle.levels.half_adder"),
+    require("puzzle.levels.full_adder")
 }
