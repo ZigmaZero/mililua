@@ -12,9 +12,8 @@ function CircuitEditor:init(circuit, frontend)
     self.componentViews = {}
     self.wireViews = {}
 
-    self.activePort = nil
-    self.hoveringPort = nil
-    self.temporaryWireView = nil
+    self.sourcePort = nil
+    self.destinationPort = nil
 end
 
 function CircuitEditor:updateComponentWires(component)
@@ -134,31 +133,33 @@ function CircuitEditor:getComponentPort(portData)
 end
 
 function CircuitEditor:finishPortDrag()
-    local sourceData = self.activePort
-    local destinationData = self.hoveringPort
-    self.activePort = nil
+    local sourcePort = self.sourcePort
+    local destinationPort = self.destinationPort
+    self.sourcePort = nil
+    self.destinationPort = nil
 
-    if not sourceData or not destinationData then
-        self.temporaryWireView = nil
+    if not sourcePort or not destinationPort then
         return
     end
 
-    local _, sourcePort, sourceReference = self:getComponentPort(sourceData)
-    local _, destinationPort, destinationReference = self:getComponentPort(destinationData)
-    if not sourcePort or not destinationPort then
-        self.temporaryWireView = nil
+    local sourceRef = sourcePort:reference()
+    local destRef = destinationPort:reference()
+    if not sourceRef or not destRef then
         return
     end
 
     if not self:isOppositePortPair(sourcePort, destinationPort) then
-        self.temporaryWireView = nil
         return
     end
 
-    local wire = self:connectPorts(sourcePort, destinationPort)
-    if wire and sourceReference and destinationReference then
-        self.temporaryWireView = nil
+    local inputPort = sourcePort.type == "in" and sourcePort or destinationPort
+    ---@cast inputPort InputPort
+    if inputPort.connection then
+        self.frontend:destroyObject(inputPort.connection:reference())
+        self.circuit:disconnect(inputPort.connection)
     end
+
+    local wire = self:connectPorts(sourcePort, destinationPort)
 end
 
 function CircuitEditor:registerPortListeners(component, reference, inOut, count)
@@ -166,69 +167,18 @@ function CircuitEditor:registerPortListeners(component, reference, inOut, count)
     reference:GetChild(pinGroup):RefreshItems(count, function(control, index)
         local portIndex = index + 1
         local cursorEventArea = control:GetChild("CursorEventArea")
+        component[inOut == "in" and "inputs" or "outputs"][portIndex]:setReference(control)
 
         cursorEventArea:AddCursorEventListener(
-            Enum.CursorEventType.CursorEnter,
+            Enum.CursorEventType.CursorClick,
             function()
-                self.hoveringPort = {
-                    id = component.id,
-                    inOut = inOut,
-                    port = portIndex
-                }
-            end
-        )
-
-        cursorEventArea:AddCursorEventListener(
-            Enum.CursorEventType.CursorExit,
-            function()
-                self.hoveringPort = nil
-            end
-        )
-
-        cursorEventArea:AddCursorEventListener(
-            Enum.CursorEventType.CursorBeginDrag,
-            function(eventData)
-                self.activePort = {
-                    id = component.id,
-                    inOut = inOut,
-                    port = portIndex
-                }
-                local x, y = self:getPortPosition(control)
-                local dx, dy = eventData:GetUIPos()
-                local visual = self.frontend:createTemporaryWireVisual(
-                    reference,
-                    portIndex,
-                    x + dx,
-                    y + dy
-                )
-                self.temporaryWireView = visual and visual.id or nil
-            end
-        )
-
-        cursorEventArea:AddCursorEventListener(
-            Enum.CursorEventType.CursorDrag,
-            function(eventData)
-                if not self.activePort or not self.temporaryWireView then
+                local port = component[inOut == "in" and "inputs" or "outputs"][portIndex]
+                if not self.sourcePort then
+                    self.sourcePort = port
                     return
                 end
-                local x, y = self:getPortPosition(control)
-                local dx, dy = eventData:GetUIPosDelta()
-                local visual = game.GetClientUIControl(self.temporaryWireView)
-                if visual then
-                    self.frontend:updateTemporaryWireVisual(
-                        reference,
-                        self.activePort.port,
-                        x + dx,
-                        y + dy,
-                        visual
-                    )
-                end
-            end
-        )
 
-        cursorEventArea:AddCursorEventListener(
-            Enum.CursorEventType.CursorEndDrag,
-            function()
+                self.destinationPort = port
                 self:finishPortDrag()
             end
         )
@@ -265,7 +215,7 @@ end
 function CircuitEditor:removeComponent(component)
     self.componentViews[component.id] = nil
     self.circuit:removeComponent(component)
-    local control = game.GetClientUIControl(component.referenceId)
+    local control = component:reference()
     if not control then
         return
     end
@@ -275,7 +225,7 @@ end
 function CircuitEditor:removeWire(wire)
     self.wireViews[wire.id] = nil
     self.circuit:disconnect(wire)
-    local control = game.GetClientUIControl(wire.referenceId)
+    local control = wire:reference()
     if not control then
         return
     end
@@ -309,6 +259,46 @@ function CircuitEditor:createNode(componentType, x, y, name)
     return component
 end
 
+function CircuitEditor:wireRecursiveRegisterDeleteListener(control, keyup, keydown)
+    if not control then
+        return
+    end
+    for _, value in ipairs(control:GetChildren()) do
+        if typeof(value) == "ClientUIImageControl" and value.name == "Wire" then
+            ---@cast value ClientUIImageControl
+            -- make cursoreventarea
+            local cea = game.InstantiateClientUIControl(1073741967, control)
+            cea:SetAnchoredPosition(value:GetAnchoredPosition())
+            cea:SetAnchorMax(value:GetAnchorMax())
+            cea:SetAnchorMin(value:GetAnchorMin())
+            cea:SetLocalRotation(value:GetLocalRotation())
+            cea:SetLocalScale(value:GetLocalScale())
+            cea:SetPivot(value:GetPivot())
+            cea:SetSizeDelta(value:GetSizeDelta())
+            cea:AddKeyEventListener(Enum.KeyEventType.KeyboardSprintKeyUp, keyup)
+            cea:AddKeyEventListener(Enum.KeyEventType.KeyboardSprintKeyDown, keydown)
+        end
+        self:wireRecursiveRegisterDeleteListener(value, keyup, keydown)
+    end
+end
+
+function CircuitEditor:wireRegisterDeleteListener(control, callback)
+    local deleteRequested = false
+    self:wireRecursiveRegisterDeleteListener(control,
+        function()
+            deleteRequested = true
+            return true
+        end,
+        function()
+            if deleteRequested then
+                deleteRequested = false
+                callback()
+            end
+            return true
+        end
+    )
+end
+
 ---@param source Port
 ---@param destination Port
 function CircuitEditor:connectPorts(
@@ -337,21 +327,21 @@ function CircuitEditor:connectPorts(
             input
         )
 
-    local sourceRef = self.componentViews[source.owner.id].reference
-    local destRef = self.componentViews[destination.owner.id].reference
+    local outputRef = output:reference()
+    local inputRef = input:reference()
 
     local reference =
         self.frontend:createWireVisual(
-            sourceRef,
-            destRef,
+            outputRef,
+            inputRef,
             wire
         )
 
     wire:setReference(reference)
 
     if reference then
-        self:registerDeleteListener(
-            reference:GetChild("CursorEventArea"),
+        self:wireRegisterDeleteListener(
+            reference,
             function()
                 self:removeWire(wire)
             end
@@ -359,6 +349,11 @@ function CircuitEditor:connectPorts(
     end
 
     self.wireViews[wire.id] = wire
+
+    -- just... start jiggling the components slightly.
+    self:moveComponent(source.owner, source.owner:reference(), 0, 0)
+    self:moveComponent(destination.owner, destination.owner:reference(), 0, 0)
+
     return wire
 end
 

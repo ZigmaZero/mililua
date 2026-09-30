@@ -12,6 +12,13 @@ function MiliastraFrontend:init(uiRoot)
     self.textRegistry = {}
 end
 
+function MiliastraFrontend:getPortPosition(control)
+    local ax, ay = control:GetAnchoredPosition()
+    local bx, by = control.parent:GetAnchoredPosition()
+    local cx, cy = control.parent.parent:GetAnchoredPosition()
+    return ax + bx + cx, ay + by + cy
+end
+
 -- Set text
 
 function MiliastraFrontend:setText(textKey, text)
@@ -70,7 +77,7 @@ function MiliastraFrontend:createComponentVisual(component, x, y)
 end
 
 ---@param wire Wire
-function MiliastraFrontend:createWireVisual(sourceRef, destRef, wire)
+function MiliastraFrontend:createWireVisual(sourcePortRef, destPortRef, wire)
     local uiRoot = game.GetClientUIControl(self.uiRootId)
     assert(uiRoot ~= nil)
     local mask = uiRoot:FindChild("CircuitPage/CircuitArea/Mask")
@@ -78,58 +85,65 @@ function MiliastraFrontend:createWireVisual(sourceRef, destRef, wire)
         return
     end
 
-    local reference = game.InstantiateClientUIControl(1073742363, mask)
-    return self:updateWireVisual(sourceRef, destRef, wire, reference)
+    local reference = game.InstantiateClientUIControl(1073742639, mask)
+    return self:updateWireVisual(sourcePortRef, destPortRef, wire, reference)
 end
 
----@param sourceRef ClientControlType
----@param destRef ClientControlType
+---@param sourcePortRef ClientControlType
+---@param destPortRef ClientControlType
 ---@param wire Wire
 ---@param visual ClientControlType
 ---@return ClientControlType?
-function MiliastraFrontend:updateWireVisual(sourceRef, destRef, wire, visual)
+function MiliastraFrontend:updateWireVisual(sourcePortRef, destPortRef, wire, visual)
     local uiRoot = game.GetClientUIControl(self.uiRootId)
     assert(uiRoot ~= nil)
     local mask = uiRoot:FindChild("CircuitPage/CircuitArea/Mask")
     if not mask then
         return
     end
-    local srcPortIdx = wire.source.index
-    local dstPortIdx = wire.destination.index
-    local sourceCtrl = self:getOutputPortReference(sourceRef, srcPortIdx)
-    local destCtrl = self:getOutputPortReference(destRef, dstPortIdx)
-
-    if not sourceCtrl or not destCtrl then
-        return visual
-    end
-    ---@cast sourceCtrl ClientControlType
-    ---@cast destCtrl ClientControlType
-    
-    -- calculates in mask anchor coordinates to prevent headaches 
-    -- (this will not work for temp wires)
-    local sourceX, sourceY = sourceCtrl:GetAnchoredPosition()
-    local destX, destY = sourceCtrl:GetAnchoredPosition()
+    -- calculates in mask anchor coordinates to prevent headaches
+    local sourceX, sourceY = self:getPortPosition(sourcePortRef)
+    local destX, destY = self:getPortPosition(destPortRef)
     local deltaX = destX - sourceX
     local deltaY = destY - sourceY
+
+    visual.sizeDeltaX = math.abs(deltaX)
+    visual.sizeDeltaY = math.abs(deltaY)
+
     local wireX = (sourceX + destX) / 2
     local wireY = (sourceY + destY) / 2
-    local wireSizeDelta = math.sqrt(deltaX * deltaX + deltaY * deltaY)
-    local wireRotation = math.deg(math.atan(deltaY, deltaX))
-
-    visual.sizeDeltaX = wireSizeDelta
+    local types = {
+        "WireUpForwards",
+        "WireUpBackwards",
+        "WireDownForwards",
+        "WireDownBackwards",
+    }
+    local selectedType
+    if deltaY >= 0 then
+        if deltaX >= 0 then
+            selectedType = "WireUpForwards"
+        else
+            selectedType = "WireUpBackwards"
+        end
+    elseif deltaX >= 0 then
+        selectedType = "WireDownForwards"
+    else
+        selectedType = "WireDownBackwards"
+    end
+    for _, type in ipairs(types) do
+        visual:GetChild(type):SetVisible(type == selectedType)
+    end
 
     -- Set object x, y
     visual:SetAnchoredPosition(wireX, wireY)
-    visual:SetLocalRotation(0, 0, wireRotation)
 
     return visual
 end
 
 function MiliastraFrontend:createTemporaryWireVisual(
-    sourceRef,
-    portIdx,
-    x,
-    y
+    sourcePortRef,
+    dx,
+    dy
 )
     local uiRoot = game.GetClientUIControl(self.uiRootId)
     assert(uiRoot ~= nil)
@@ -137,39 +151,15 @@ function MiliastraFrontend:createTemporaryWireVisual(
     if not mask then
         return
     end
-    local visual = game.InstantiateClientUIControl(1073742354, mask)
-    local sourceCtrl = self:getOutputPortReference(sourceRef, portIdx)
-    if not sourceCtrl then
-        return visual
-    end
-    local sourceX, sourceY = sourceCtrl:GetAnchoredPosition()
-    local maskMidX = (ControlDimensionsUtils.getUnscaledMaxWidth(mask) + ControlDimensionsUtils.getUnscaledMinWidth(mask))/2
-    local maskMidY = (ControlDimensionsUtils.getUnscaledMaxHeight(mask) + ControlDimensionsUtils.getUnscaledMinHeight(mask))/2
-    local destX = x - maskMidX
-    local destY = y - maskMidY
-
-    local deltaX = destX - sourceX
-    local deltaY = destY - sourceY
-    local wireX = (sourceX + destX) / 2
-    local wireY = (sourceY + destY) / 2
-    local wireSizeDelta = math.sqrt(deltaX * deltaX + deltaY * deltaY)
-    local wireRotation = math.deg(math.atan(deltaY, deltaX))
-
-    visual.sizeDeltaX = wireSizeDelta
-
-    -- Set object x, y
-    visual:SetAnchoredPosition(wireX, wireY)
-    visual:SetLocalRotation(0, 0, wireRotation)
-
-    return visual
+    local reference = game.InstantiateClientUIControl(1073742639, mask)
+    return self:updateTemporaryWireVisual(sourcePortRef, dx, dy, reference)
 end
 
 function MiliastraFrontend:updateTemporaryWireVisual(
-    sourceRef,
-    portIdx,
-    x,
-    y,
-    visual
+    sourcePortRef,
+    dx,
+    dy,
+    reference
 )
     local uiRoot = game.GetClientUIControl(self.uiRootId)
     assert(uiRoot ~= nil)
@@ -178,29 +168,42 @@ function MiliastraFrontend:updateTemporaryWireVisual(
         return
     end
 
-    local sourceCtrl = self:getOutputPortReference(sourceRef, portIdx)
-    if not sourceCtrl then
-        return
-    end
-
-    local sourceX, sourceY = sourceCtrl:GetAnchoredPosition()
-    local maskMidX = (ControlDimensionsUtils.getUnscaledMaxWidth(mask) + ControlDimensionsUtils.getUnscaledMinWidth(mask))/2
-    local maskMidY = (ControlDimensionsUtils.getUnscaledMaxHeight(mask) + ControlDimensionsUtils.getUnscaledMinHeight(mask))/2
-    local destX = x - maskMidX
-    local destY = y - maskMidY
-
+    local sourceX, sourceY = self:getPortPosition(sourcePortRef)
+    local destX, destY = dx, dy
     local deltaX = destX - sourceX
     local deltaY = destY - sourceY
+
+    reference.sizeDeltaX = math.abs(deltaX)
+    reference.sizeDeltaY = math.abs(deltaY)
+
     local wireX = (sourceX + destX) / 2
     local wireY = (sourceY + destY) / 2
-    local wireSizeDelta = math.sqrt(deltaX * deltaX + deltaY * deltaY)
-    local wireRotation = math.deg(math.atan(deltaY, deltaX))
-
-    visual.sizeDeltaX = wireSizeDelta
+    local types = {
+        "WireUpForwards",
+        "WireUpBackwards",
+        "WireDownForwards",
+        "WireDownBackwards",
+    }
+    local selectedType
+    if deltaY >= 0 then
+        if deltaX >= 0 then
+            selectedType = "WireUpForwards"
+        else
+            selectedType = "WireUpBackwards"
+        end
+    elseif deltaX >= 0 then
+        selectedType = "WireDownForwards"
+    else
+        selectedType = "WireDownBackwards"
+    end
+    for _, type in ipairs(types) do
+        reference:GetChild(type):SetVisible(type == selectedType)
+    end
 
     -- Set object x, y
-    visual:SetAnchoredPosition(wireX, wireY)
-    visual:SetLocalRotation(0, 0, wireRotation)
+    reference:SetAnchoredPosition(wireX, wireY)
+
+    return reference
 end
 
 -- Port references
