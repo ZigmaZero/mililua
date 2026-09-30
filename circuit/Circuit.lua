@@ -20,14 +20,14 @@ end
 
 function Circuit:addInputNode(name)
     local component = InputNode.new(self.nextComponentId, name)
-    table.insert(self.inputNodes, component)
+    self.inputNodes[name] = component
     self.nextComponentId = self.nextComponentId + 1
     return component
 end
 
 function Circuit:addOutputNode(name)
     local component = OutputNode.new(self.nextComponentId, name)
-    table.insert(self.outputNodes, component)
+    self.outputNodes[name] = component
     self.nextComponentId = self.nextComponentId + 1
     return component
 end

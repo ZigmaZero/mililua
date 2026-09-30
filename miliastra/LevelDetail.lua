@@ -10,6 +10,7 @@ function M.setLevelDetail(levelDetailControl, level)
     frontend:setText("level_info", level.info)
     local Btn = levelDetailControl:FindChild("ContainerControl/StartBtn")
     ---@cast Btn ClientUIPresetButtonControl
+    Btn:RemoveAllCursorEventListeners()
     Btn:AddCursorEventListener(Enum.CursorEventType.CursorClick, function (eventData)
         Global.getGame().levelManager:loadLevel(level.id)
         uiRoot.switchPage("CircuitPage")

@@ -38,14 +38,32 @@ end
 
 ---@param circuit Circuit
 function Puzzle:test(circuit)
-    for _, test in ipairs(self.tests) do
+    for testIndex, test in ipairs(self.tests) do
+        print("Running puzzle test " .. testIndex)
         local outputTimeline = {}
         for i = 1, self.simulationLimit do
             if test.input[i] then
+                print("Timestamp " .. i .. " input changes:")
+                for name, value in pairs(test.input[i]) do
+                    print("  " .. name .. " = " .. tostring(value))
+                end
                 circuit:setInputs(test.input[i])
             end
             circuit:evaluate()
-            outputTimeline[i] = circuit:getOutputs()
+            local outputs = circuit:getOutputs()
+            outputTimeline[i] = outputs
+
+            print("Timestamp " .. i .. " outputs:")
+            for name, value in pairs(outputs) do
+                print("  " .. name .. " = " .. tostring(value))
+            end
+
+            if test.output[i] then
+                print("Timestamp " .. i .. " expected outputs:")
+                for name, value in pairs(test.output[i]) do
+                    print("  " .. name .. " = " .. tostring(value))
+                end
+            end
         end
 
         if not self:outputSatisfies(

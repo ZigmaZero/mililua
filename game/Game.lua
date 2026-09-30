@@ -27,6 +27,7 @@ function Game:loadLevel(level)
 
     self.circuit = Circuit.new()
     for _, name in ipairs(level.inputs) do
+        print("Adding input node: " .. name)
         self.circuit:addInputNode(name)
     end
 
