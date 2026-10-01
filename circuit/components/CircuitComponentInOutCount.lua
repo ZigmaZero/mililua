@@ -11,7 +11,9 @@
         OUTPUT = {1, 0},
         DELAY = {1, 1},
         HALF_ADD = {2, 2},
-        FULL_ADD = {3, 2}
+        FULL_ADD = {3, 2},
+        MUX = {3, 1},
+        DEMUX = {2, 2}
     }
 
     return ComponentTypeToInOutCount

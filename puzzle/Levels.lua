@@ -8,6 +8,9 @@ return {
     require("puzzle.levels.xor_gate"),
     require("puzzle.levels.xnor_gate"),
 
+    require("puzzle.levels.mux"),
+    require("puzzle.levels.demux"),
+
     require("puzzle.levels.half_adder"),
     require("puzzle.levels.full_adder")
 }

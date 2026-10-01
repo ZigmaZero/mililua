@@ -6,9 +6,9 @@ local Level = Puzzle.new({
 
     info = "This level introduces the ability to create components.",
 
-    specs = "For this level, you will need to use components to complete the task.\n\nClick the NAND component from the palette to the left to create it on the board. Right click these components to remove them.\n\nMake a circuit that provides the following behavior:\nA = 1, B = 1  --> OUT = 0\nAnything else --> OUT = 1",
+    specs = "For this level, you will need to use components to complete the task.\n\nClick the NAND component from the palette to the left to create it on the board. Right click these components to remove them.\n\nMake a circuit that provides the following behavior:\nA = 1, B = 1  --> OUT = 0\nAnything else --> OUT = 1\n\n(Technically, these are 1 = True and 0 = False values, but they're interchangeable.)",
 
-    hintText = "Use the NAND gate to wire both inputs!",
+    hintText = "Use the NAND gate to wire both inputs! Click the palette to create a NAND gate, then click the ports to connect it with the inputs and outputs!",
 
     inputs = {
         "A",

@@ -11,7 +11,9 @@ local ComponentType = {
     OUTPUT = "OUTPUT",
     DELAY = "DELAY",
     HALF_ADD = "HALF_ADD",
-    FULL_ADD = "FULL_ADD"
+    FULL_ADD = "FULL_ADD",
+    MUX = "MUX",
+    DEMUX = "DEMUX"
 }
 
 return ComponentType
